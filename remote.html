@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>Remote • THE LINKS VIP KTV</title>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%; height: 100dvh;
+    background: #020008;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Background gradients */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% -10%, rgba(212,168,67,.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at -5% 50%, rgba(100,20,220,.30) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 60% at 105% 50%, rgba(80,10,200,.25) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 50% 110%, rgba(255,77,166,.18) 0%, transparent 60%);
+  }
+
+  /* Top rainbow strip */
+  body::after {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 200;
+    background: linear-gradient(90deg,#FF4DA6,#CC88FF,#00F5FF,#39FF14,#FFD700,#FF8C00,#FF4DA6);
+    background-size: 200% auto;
+    animation: neonScan 3s linear infinite;
+    box-shadow: 0 0 10px rgba(255,255,255,.3);
+  }
+
+  /* Layout */
+  #app {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    height: 100%; height: 100dvh;
+  }
+
+  /* Scrollable content */
+  #content {
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    padding: 20px 16px 170px;
+  }
+
+  /* Header card */
+  .header-card {
+    margin-top: 12px;
+    padding: 14px 18px; border-radius: 16px;
+    background: rgba(3,0,12,.90); backdrop-filter: blur(20px);
+    border: 1px solid var(--nc, #FF4DA6);
+    box-shadow: 0 0 20px rgba(255,77,166,.15);
+    transition: border-color .6s, box-shadow .6s;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 18px;
+  }
+  .logo-box {
+    width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+    border: 1px solid rgba(212,168,67,.6);
+    background: linear-gradient(145deg,rgba(212,168,67,.2),rgba(50,22,0,.7));
+    box-shadow: 0 0 16px rgba(212,168,67,.4);
+  }
+  .logo-box svg { filter: drop-shadow(0 0 6px rgba(212,168,67,.9)); }
+  .logo-box span { font-size: 5.5px; font-weight: 900; color: #D4A843; letter-spacing: .08em; }
+  .brand-sub { font-size: 6px; letter-spacing: .22em; color: rgba(212,168,67,.45); text-transform: uppercase; font-weight: 700; }
+  .brand-title {
+    font-size: 1.05rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase;
+    background: linear-gradient(135deg,#FFF5B0 0%,#D4A843 28%,#FFF8C0 50%,#C08510 72%,#ECC055 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .live-badge {
+    margin-left: auto; flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px;
+    background: rgba(57,255,20,.08); border: 1px solid rgba(57,255,20,.4);
+    font-size: 8px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: #39FF14;
+    text-shadow: 0 0 8px rgba(57,255,20,.6);
+  }
+  .live-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #39FF14; box-shadow: 0 0 6px #39FF14;
+    animation: neonPulse .9s ease-in-out infinite;
+  }
+
+  /* Search bar */
+  .search-wrap { position: relative; margin-bottom: 12px; }
+  #searchInput {
+    width: 100%; background: rgba(0,0,0,.70); color: #fff;
+    padding: 14px 52px 14px 18px; border-radius: 12px; font-size: 15px; outline: none;
+    border: 1px solid var(--nc, #FF4DA6);
+    box-shadow: 0 0 16px rgba(255,77,166,.10);
+    transition: border-color .6s, box-shadow .6s;
+    backdrop-filter: blur(10px);
+    font-family: inherit;
+  }
+  #searchInput::placeholder { color: rgba(212,168,67,.3); }
+  .search-btn-inner {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 36px; height: 36px; border-radius: 9px; border: none;
+    background: rgba(255,77,166,.15); color: var(--nc, #FF4DA6); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .6s;
+  }
+
+  /* Tags */
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tag {
+    padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    border: 1px solid rgba(212,168,67,.3); background: rgba(212,168,67,.07);
+    color: rgba(240,192,80,.7); cursor: pointer; letter-spacing: .06em;
+    font-family: inherit;
+  }
+
+  /* Spinner */
+  #spinner {
+    display: none; text-align: center; padding: 40px 0;
+    flex-direction: column; align-items: center; gap: 12px;
+  }
+  #spinner.show { display: flex; }
+  .spin-ring {
+    width: 36px; height: 36px;
+    border: 3px solid rgba(255,77,166,.2);
+    border-top-color: var(--nc, #FF4DA6);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  .spin-label { font-size: 12px; color: rgba(255,77,166,.6); letter-spacing: .1em; text-transform: uppercase; }
+
+  /* Results */
+  #results { display: flex; flex-direction: column; gap: 8px; }
+  .results-count { font-size: 9px; color: rgba(255,255,255,.3); letter-spacing: .15em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+  .song-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 10px; width: 100%; text-align: left;
+    cursor: pointer; border: 1px solid rgba(255,255,255,.07);
+    background: rgba(255,255,255,.03);
+    transition: all .15s; font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .song-btn.top { background: rgba(212,168,67,.10); border-color: rgba(212,168,67,.35); box-shadow: 0 0 12px rgba(212,168,67,.1); }
+  .song-btn.added { background: rgba(57,255,20,.10); border-color: rgba(57,255,20,.35); box-shadow: 0 0 12px rgba(57,255,20,.1); cursor: default; }
+  .song-btn:active { opacity: .75; }
+  .song-thumb-wrap { position: relative; flex-shrink: 0; }
+  .song-thumb { width: 60px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,.1); }
+  .song-btn.top .song-thumb { border-color: rgba(212,168,67,.4); }
+  .song-btn.added .song-thumb { opacity: .55; }
+  .top-badge {
+    position: absolute; top: -4px; left: -4px;
+    background: #39FF14; color: #000; font-size: 7px; font-weight: 900;
+    padding: 1px 5px; border-radius: 4px; letter-spacing: .08em;
+  }
+  .song-info { flex: 1; min-width: 0; }
+  .song-title {
+    font-size: 13px; font-weight: 600; line-height: 1.3;
+    color: rgba(255,255,255,.88);
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .song-btn.top .song-title { color: rgba(240,192,80,.95); }
+  .song-btn.added .song-title { color: #39FF14; }
+  .song-channel { font-size: 10px; color: rgba(0,245,255,.45); margin-top: 3px; text-transform: uppercase; letter-spacing: .05em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .song-action {
+    flex-shrink: 0; width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+  }
+  .song-btn.added .song-action { background: rgba(57,255,20,.15); border-color: rgba(57,255,20,.4); }
+
+  /* Empty state */
+  #emptyState { text-align: center; padding: 48px 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  #emptyState.hidden { display: none; }
+  .empty-icon { font-size: 52px; filter: drop-shadow(0 0 20px rgba(212,168,67,.3)); }
+  .empty-title { font-size: 15px; font-weight: 700; color: rgba(255,255,255,.7); }
+  .empty-sub { font-size: 12px; color: rgba(255,255,255,.3); line-height: 1.7; }
+
+  /* Fixed bottom bar */
+  #bottomBar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 10px 16px 24px;
+    background: rgba(2,0,8,.97);
+    border-top: 1px solid rgba(255,77,166,.3);
+    backdrop-filter: blur(20px);
+    z-index: 100;
+    transition: border-color .6s;
+  }
+  #btnNext {
+    width: 100%; padding: 13px 0; border-radius: 12px; margin-bottom: 8px;
+    background: linear-gradient(135deg,rgba(255,140,0,.22),rgba(255,77,166,.18));
+    border: 1px solid rgba(255,140,0,.55);
+    color: #FFB347; font-size: 14px; font-weight: 900; letter-spacing: .14em;
+    text-transform: uppercase; cursor: pointer; font-family: inherit;
+    box-shadow: 0 0 20px rgba(255,140,0,.20), inset 0 1px 0 rgba(255,255,255,.08);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: opacity .1s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  #btnNext:active { opacity: .7; }
+  .bottom-row { display: flex; gap: 10px; }
+  #btnSearch {
+    flex: 1; padding: 13px 0; border-radius: 12px;
+    background: rgba(255,77,166,.18); border: 1px solid rgba(255,77,166,.55);
+    color: var(--nc, #FF4DA6); font-size: 13px; font-weight: 800; letter-spacing: .12em;
+    text-transform: uppercase; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all .6s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  #btnSearch:active { opacity: .7; }
+  #btnReset {
+    padding: 13px 16px; border-radius: 12px;
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+    color: rgba(255,255,255,.45); font-size: 13px; font-weight: 700;
+    cursor: pointer; letter-spacing: .08em; font-family: inherit;
+    display: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  #btnReset.show { display: block; }
+  #btnReset:active { opacity: .7; }
+
+  /* Toast */
+  #toast {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
+    z-index: 9999; max-width: 90vw;
+    background: rgba(2,0,10,.97); padding: 10px 20px; border-radius: 30px;
+    font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    color: #39FF14; text-shadow: 0 0 10px rgba(57,255,20,.7);
+    border: 1px solid rgba(57,255,20,.4); backdrop-filter: blur(14px);
+    box-shadow: 0 0 20px rgba(57,255,20,.15);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+  }
+  #toast.show {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+
+  /* Animations */
+  @keyframes neonScan {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  @keyframes neonPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: .4; transform: scale(.7); }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="content">
+
+    <!-- Header -->
+    <div class="header-card" id="headerCard">
+      <div class="logo-box">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="#D4A843">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+        </svg>
+        <span>VIP KTV</span>
+      </div>
+      <div>
+        <div class="brand-sub">★ Remote Control ★</div>
+        <div class="brand-title">THE LINKS • VIP KTV</div>
+      </div>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        LIVE
+      </div>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-wrap">
+      <input id="searchInput" type="search" inputmode="search" enterkeyhint="search"
+             placeholder="Cari lagu atau artis..."/>
+      <button class="search-btn-inner" onclick="doSearch()" aria-label="Cari">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Quick tags -->
+    <div class="tags" id="tagsRow">
+      <button class="tag" onclick="setTag('Pop Indonesia')">Pop Indonesia</button>
+      <button class="tag" onclick="setTag('Mandarin')">Mandarin</button>
+      <button class="tag" onclick="setTag('OPM')">OPM</button>
+      <button class="tag" onclick="setTag('K-Pop')">K-Pop</button>
+      <button class="tag" onclick="setTag('Rock')">Rock</button>
+      <button class="tag" onclick="setTag('Dangdut')">Dangdut</button>
+      <button class="tag" onclick="setTag('Jazz')">Jazz</button>
+    </div>
+
+    <!-- Spinner -->
+    <div id="spinner">
+      <div class="spin-ring"></div>
+      <span class="spin-label">Mencari di YouTube...</span>
+    </div>
+
+    <!-- Results -->
+    <div id="results"></div>
+
+    <!-- Empty state -->
+    <div id="emptyState">
+      <div class="empty-icon">🎤</div>
+      <div class="empty-title">Pilih Lagumu!</div>
+      <div class="empty-sub">Ketik nama lagu atau artis di atas<br>dan tekan Cari untuk menambah ke antrian</div>
+    </div>
+
+  </div><!-- /#content -->
+
+  <!-- Fixed bottom bar -->
+  <div id="bottomBar">
+    <button id="btnNext" onclick="nextSong()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/>
+      </svg>
+      ⏭ SKIP / NEXT LAGU
+    </button>
+    <div class="bottom-row">
+      <button id="btnSearch" onclick="doSearch()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        CARI LAGU
+      </button>
+      <button id="btnReset" onclick="resetSearch()">RESET</button>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Firebase SDK (v9 compat via CDN) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const YT_KEY = "AIzaSyDRqyB5XtgdHTtDVbhuIR5cL6OqDTZlFgE";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyBEx2cWIr5e1vZamz65kq8cO1JQ0cUAzuQ",
+  authDomain:        "karaoke-control.firebaseapp.com",
+  databaseURL:       "https://karaoke-control-default-rtdb.firebaseio.com",
+  projectId:         "karaoke-control",
+  storageBucket:     "karaoke-control.firebasestorage.app",
+  messagingSenderId: "868744728649",
+  appId:             "1:868744728649:web:500e5bec0ce4ca70f62f98",
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ─── NEON COLOR CYCLE ─────────────────────────────────────────────────────────
+const NEON = ["#FF4DA6","#CC88FF","#00F5FF","#39FF14","#FF8C00","#4488FF"];
+let neonIdx = 0;
+function nextNeon() {
+  neonIdx = (neonIdx + 1) % NEON.length;
+  const c = NEON[neonIdx];
+  document.documentElement.style.setProperty("--nc", c);
+  document.getElementById("headerCard").style.borderColor = c + "88";
+  document.getElementById("headerCard").style.boxShadow  = `0 0 20px ${c}33`;
+  document.getElementById("bottomBar").style.borderTopColor = c + "44";
+  document.getElementById("searchInput").style.borderColor = c + "66";
+  document.getElementById("searchInput").style.boxShadow   = `0 0 16px ${c}22`;
+  document.getElementById("btnSearch").style.color         = c;
+  document.getElementById("btnSearch").style.borderColor   = c + "66";
+  document.getElementById("btnSearch").style.background    = `linear-gradient(135deg,${c}28,${c}14)`;
+  document.querySelector(".search-btn-inner").style.color  = c;
+}
+setInterval(nextNeon, 1200);
+nextNeon();
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let songs   = [];   // all fetched songs
+let addedIds = new Set();
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2200);
+}
+
+// ─── FIREBASE COMMANDS ────────────────────────────────────────────────────────
+function firebaseCmd(action, payload) {
+  db.ref("commands").push({ action, payload: payload || null, ts: Date.now() });
+}
+
+function nextSong() {
+  firebaseCmd("next");
+  showToast("⏭ Lagu berikutnya...");
+}
+
+// ─── SEARCH ───────────────────────────────────────────────────────────────────
+function setTag(tag) {
+  document.getElementById("searchInput").value = tag;
+  doSearch();
+}
+
+async function doSearch() {
+  const q = document.getElementById("searchInput").value.trim();
+  if (!q) return;
+
+  // Hide tags, show spinner
+  document.getElementById("tagsRow").style.display = "none";
+  document.getElementById("emptyState").classList.add("hidden");
+  document.getElementById("spinner").classList.add("show");
+  document.getElementById("results").innerHTML = "";
+  songs = [];
+  addedIds = new Set();
+  document.getElementById("btnReset").classList.remove("show");
+
+  const base = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&q=${encodeURIComponent(q)}&key=${YT_KEY}`;
+
+  try {
+    // Page 1
+    const r1 = await fetch(base);
+    const d1 = await r1.json();
+    if (!d1.items || !d1.items.length) { endSearch(); return; }
+    const page1 = parsePage(d1.items);
+    songs = page1;
+    renderResults();
+
+    // Page 2 (runs while user is already scrolling page 1)
+    if (d1.nextPageToken) {
+      const r2 = await fetch(`${base}&pageToken=${encodeURIComponent(d1.nextPageToken)}`);
+      const d2 = await r2.json();
+      if (d2.items && d2.items.length) {
+        songs = songs.concat(parsePage(d2.items));
+        renderResults();
+      }
+    }
+  } catch(e) { /* silently ignore */ }
+  endSearch();
+}
+
+function endSearch() {
+  document.getElementById("spinner").classList.remove("show");
+  document.getElementById("btnReset").classList.add("show");
+}
+
+function parsePage(items) {
+  return items
+    .filter(i => i.id && i.id.videoId)
+    .map(i => ({
+      id:      i.id.videoId,
+      title:   i.snippet.title,
+      channel: i.snippet.channelTitle,
+      thumb:   i.snippet.thumbnails.default.url,
+    }));
+}
+
+function renderResults() {
+  const container = document.getElementById("results");
+  container.innerHTML = "";
+  if (!songs.length) return;
+
+  const countEl = document.createElement("div");
+  countEl.className = "results-count";
+  countEl.textContent = `${songs.length} hasil ditemukan — tap untuk tambah ke antrian`;
+  container.appendChild(countEl);
+
+  songs.forEach((song, idx) => {
+    const isTop   = idx === 0;
+    const isAdded = addedIds.has(song.id);
+
+    const btn = document.createElement("button");
+    btn.className = "song-btn" + (isTop ? " top" : "") + (isAdded ? " added" : "");
+    btn.dataset.id = song.id;
+
+    btn.innerHTML = `
+      <div class="song-thumb-wrap">
+        <img class="song-thumb" src="${escHtml(song.thumb)}" alt="" loading="lazy"/>
+        ${isTop && !isAdded ? '<div class="top-badge">TOP</div>' : ''}
+      </div>
+      <div class="song-info">
+        <div class="song-title">${escHtml(song.title)}</div>
+        <div class="song-channel">${escHtml(song.channel)}</div>
+      </div>
+      <div class="song-action">
+        ${isAdded
+          ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#39FF14" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
+          : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'
+        }
+      </div>`;
+
+    if (!isAdded) {
+      btn.addEventListener("click", () => addSong(song, btn));
+    }
+    container.appendChild(btn);
+  });
+}
+
+function addSong(song, btn) {
+  if (addedIds.has(song.id)) return;
+  firebaseCmd("add", song);
+  addedIds.add(song.id);
+  // Update button visually
+  btn.classList.add("added");
+  btn.classList.remove("top");
+  btn.querySelector(".song-title").style.color = "#39FF14";
+  btn.querySelector(".song-action").innerHTML =
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#39FF14" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+  const topBadge = btn.querySelector(".top-badge");
+  if (topBadge) topBadge.remove();
+  btn.removeEventListener("click", () => addSong(song, btn));
+  showToast("✓ Ditambahkan ke Antrian");
+}
+
+function resetSearch() {
+  songs = [];
+  addedIds = new Set();
+  document.getElementById("results").innerHTML = "";
+  document.getElementById("searchInput").value = "";
+  document.getElementById("tagsRow").style.display = "flex";
+  document.getElementById("emptyState").classList.remove("hidden");
+  document.getElementById("btnReset").classList.remove("show");
+  document.getElementById("searchInput").focus();
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+// ─── KEYBOARD ENTER ───────────────────────────────────────────────────────────
+document.getElementById("searchInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); doSearch(); }
+});
+</script>
+</body>
+</html>
