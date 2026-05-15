@@ -4,512 +4,372 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>THE LINKS • VIP KTV</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Rajdhani:wght@400;500;600;700&family=Exo+2:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet"/>
-
 <style>
+/* ── RESET & ROOT ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --g1:#FFE48C;--g2:#D4A843;--g3:#B8860B;
-  --c1:#00F5FF;--v1:#CC88FF;--pk:#FF4DA6;--gr:#39FF14;--or:#FF8C00;--bl:#4488FF;
   --bg:#01000A;
-  --panel-bg:rgba(4,1,18,.97);
-  --glass:rgba(255,255,255,.028);
-  --gold-dim:rgba(212,168,67,.18);
-  --gold-mid:rgba(212,168,67,.45);
-  --gold-bright:rgba(255,220,80,.9);
-  --font-ui:'Rajdhani',sans-serif;
-  --font-title:'Cinzel Decorative',serif;
-  --font-body:'Exo 2',sans-serif;
+  --panel:#060210;
+  --gold:#D4A843;
+  --gold2:#FFD740;
+  --cyan:#00F5FF;
+  --green:#39FF14;
+  --pink:#FF4DA6;
+  --violet:#CC88FF;
+  --orange:#FF8C00;
+  --blue:#4488FF;
+  --font:'Segoe UI',Arial,sans-serif;
 }
-html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font-body);color:#fff;background:var(--bg)}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);color:#fff;background:var(--bg)}
 
-/* ── RICH BACKGROUND (static, no animation) ── */
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:
-  radial-gradient(ellipse 80% 40% at 50% -8%,rgba(212,168,67,.38) 0%,transparent 60%),
-  radial-gradient(ellipse 60% 60% at -8% 50%,rgba(110,20,240,.42) 0%,transparent 55%),
-  radial-gradient(ellipse 60% 60% at 108% 50%,rgba(90,10,220,.38) 0%,transparent 55%),
-  radial-gradient(ellipse 45% 40% at 15% 105%,rgba(255,77,166,.28) 0%,transparent 52%),
-  radial-gradient(ellipse 45% 40% at 85% 105%,rgba(0,245,255,.20) 0%,transparent 52%),
-  radial-gradient(ellipse 120% 100% at 50% 58%,rgba(10,0,32,.82) 0%,transparent 100%)}
-body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:
-    linear-gradient(rgba(212,168,67,.022) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(212,168,67,.022) 1px,transparent 1px);
-  background-size:40px 40px,40px 40px}
+/* ── SIMPLE BACKGROUND ── */
+body{background:radial-gradient(ellipse 100% 60% at 50% 0%,rgba(212,168,67,.25) 0%,#01000A 55%)}
 
-/* ── BOKEH (static, no animation, no blur) ── */
-#bk{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.orb{position:absolute;border-radius:50%;opacity:.18}
-
-/* ── KEYFRAMES (only transform/opacity — GPU-friendly) ── */
-@keyframes neonPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.7)}}
-@keyframes goldGlow{0%,100%{text-shadow:0 0 24px rgba(212,168,67,1),0 0 48px rgba(212,168,67,.6)}50%{text-shadow:0 0 36px rgba(255,228,90,1),0 0 72px rgba(212,168,67,.8)}}
-@keyframes eqBar{from{transform:scaleY(1)}to{transform:scaleY(.15)}}
+/* ── KEYFRAMES (transform/opacity only) ── */
+@keyframes eqBar{from{transform:scaleY(1)}to{transform:scaleY(.12)}}
 @keyframes mqScroll{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes notifIn{from{opacity:0;transform:translateY(12px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes adFadeIn{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:scale(1)}}
-@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-
-/* ── UTILITY ANIMS ── */
-.gold-glow-anim{animation:goldGlow 3.5s ease-in-out infinite}
-
-/* ── NEON STRIP (static gradient, no animation) ── */
-.neon-strip{flex-shrink:0;height:3px;border-radius:2px;
-  background:linear-gradient(90deg,#FF4DA6,#CC88FF,#00F5FF,#39FF14,#FFD700,#FF8C00,#FF4DA6);
-  box-shadow:0 0 6px rgba(255,255,255,.25)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes imgFade{from{opacity:0}to{opacity:1}}
 
 /* ── PANELS ── */
 .panel{
-  background:var(--panel-bg);
-  border-radius:14px;overflow:hidden;display:flex;flex-direction:column;position:relative;
-  border:1px solid rgba(212,168,67,.32);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.04) inset,
-    0 1px 0 rgba(212,168,67,.28) inset,
-    0 20px 60px rgba(0,0,0,.85);
-  transition:box-shadow .3s,border-color .3s}
-.panel:hover{border-color:rgba(212,168,67,.65);box-shadow:0 0 20px rgba(212,168,67,.25),0 20px 60px rgba(0,0,0,.85)}
-.panel::before{content:'';position:absolute;top:0;left:0;width:50px;height:50px;
-  background:radial-gradient(circle at top left,rgba(212,168,67,.28),transparent 68%);
-  pointer-events:none;z-index:1}
-.panel::after{content:'';position:absolute;bottom:0;right:0;width:40px;height:40px;
-  background:radial-gradient(circle at bottom right,rgba(212,168,67,.14),transparent 68%);
-  pointer-events:none;z-index:1}
-
-.panel-cyan{
-  border-color:rgba(0,210,230,.38);
-  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 1px 0 rgba(0,210,230,.28) inset,0 0 30px rgba(0,210,230,.08),0 20px 60px rgba(0,0,0,.85)}
-.panel-cyan::before{background:radial-gradient(circle at top left,rgba(0,210,230,.25),transparent 68%)}
-.panel-cyan::after{background:radial-gradient(circle at bottom right,rgba(0,210,230,.1),transparent 68%)}
-
-.panel-green{
-  border-color:rgba(57,200,30,.38);
-  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 1px 0 rgba(57,200,30,.28) inset,0 0 30px rgba(57,200,30,.08),0 20px 60px rgba(0,0,0,.85)}
-.panel-green::before{background:radial-gradient(circle at top left,rgba(57,200,30,.25),transparent 68%)}
-.panel-green::after{background:radial-gradient(circle at bottom right,rgba(57,200,30,.1),transparent 68%)}
-
-.panel-pink{
-  border-color:rgba(255,77,166,.38);
-  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 1px 0 rgba(255,77,166,.28) inset,0 0 30px rgba(255,77,166,.1),0 20px 60px rgba(0,0,0,.85)}
-.panel-pink::before{background:radial-gradient(circle at top left,rgba(255,77,166,.25),transparent 68%)}
-.panel-pink::after{background:radial-gradient(circle at bottom right,rgba(255,77,166,.1),transparent 68%)}
-
-/* ── NEON CORNERS (static, no animation) ── */
-.ncorner{position:absolute;width:72px;height:72px;pointer-events:none;z-index:10}
-.ncorner-tl{top:-1px;left:-1px;background:radial-gradient(circle at top left,rgba(255,77,166,.35) 0%,transparent 65%)}
-.ncorner-tr{top:-1px;right:-1px;background:radial-gradient(circle at top right,rgba(0,245,255,.35) 0%,transparent 65%)}
-.ncorner-bl{bottom:-1px;left:-1px;background:radial-gradient(circle at bottom left,rgba(57,255,20,.28) 0%,transparent 65%)}
-.ncorner-br{bottom:-1px;right:-1px;background:radial-gradient(circle at bottom right,rgba(204,136,255,.28) 0%,transparent 65%)}
+  background:var(--panel);
+  border-radius:10px;overflow:hidden;display:flex;flex-direction:column;
+  border:1px solid rgba(212,168,67,.3);
+  box-shadow:0 4px 20px rgba(0,0,0,.7)}
+.panel-cyan{border-color:rgba(0,210,230,.35)}
+.panel-green{border-color:rgba(57,200,30,.35)}
+.panel-pink{border-color:rgba(255,77,166,.35)}
 
 /* ── PANEL BODY ── */
-.panel-body{flex:1;overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:3px;position:relative;z-index:2}
+.panel-body{flex:1;overflow-y:auto;padding:5px;display:flex;flex-direction:column;gap:2px}
 ::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-track{background:rgba(0,0,0,.3);border-radius:10px}
-::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#D4A843,rgba(100,60,0,.4));border-radius:10px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.3)}
+::-webkit-scrollbar-thumb{background:rgba(212,168,67,.4);border-radius:2px}
+
+/* ── STRIP ── */
+.strip{height:2px;flex-shrink:0;background:linear-gradient(90deg,#FF4DA6,#CC88FF,#00F5FF,#39FF14,#FFD700,#FF8C00,#FF4DA6)}
 
 /* ── BUTTONS ── */
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:5px;
-  font-family:var(--font-ui);font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  padding:6px 12px;border-radius:20px;cursor:pointer;
-  transition:all .15s;
-  border:1px solid;user-select:none;white-space:nowrap;position:relative;overflow:hidden}
-.btn::before{content:'';position:absolute;top:0;left:0;right:0;height:45%;
-  background:linear-gradient(180deg,rgba(255,255,255,.12),transparent);pointer-events:none;border-radius:20px 20px 0 0}
-.btn:hover{transform:translateY(-2px) scale(1.03);filter:brightness(1.2)}
-.btn:active{transform:scale(.93);filter:brightness(.88)}
-
-.btn-cy{background:linear-gradient(135deg,rgba(0,210,230,.18),rgba(0,210,230,.06))!important;border-color:rgba(0,210,230,.65)!important;color:#5EEEFF;box-shadow:0 0 14px rgba(0,210,230,.25),0 2px 8px rgba(0,0,0,.4);text-shadow:0 0 10px rgba(0,210,230,.7)}
-.btn-gr{background:linear-gradient(135deg,rgba(57,255,20,.18),rgba(57,255,20,.06))!important;border-color:rgba(57,255,20,.65)!important;color:#55FF22;box-shadow:0 0 14px rgba(57,255,20,.25),0 2px 8px rgba(0,0,0,.4);text-shadow:0 0 10px rgba(57,255,20,.7)}
-.btn-am{background:linear-gradient(135deg,rgba(255,200,0,.18),rgba(255,200,0,.06))!important;border-color:rgba(255,200,0,.6)!important;color:#FFD740;box-shadow:0 0 14px rgba(255,200,0,.25),0 2px 8px rgba(0,0,0,.4);text-shadow:0 0 10px rgba(255,200,0,.7)}
-.btn-vi{background:linear-gradient(135deg,rgba(180,100,255,.18),rgba(180,100,255,.06))!important;border-color:rgba(180,100,255,.6)!important;color:#CC88FF;box-shadow:0 0 14px rgba(180,100,255,.25),0 2px 8px rgba(0,0,0,.4);text-shadow:0 0 10px rgba(180,100,255,.7)}
-.btn-pk{background:linear-gradient(135deg,rgba(255,77,166,.18),rgba(255,77,166,.06))!important;border-color:rgba(255,77,166,.6)!important;color:#FF4DA6;box-shadow:0 0 14px rgba(255,77,166,.25),0 2px 8px rgba(0,0,0,.4);text-shadow:0 0 10px rgba(255,77,166,.7)}
-.btn-bl{background:linear-gradient(135deg,rgba(68,136,255,.18),rgba(68,136,255,.06))!important;border-color:rgba(68,136,255,.6)!important;color:#6699FF;box-shadow:0 0 14px rgba(68,136,255,.25),0 2px 8px rgba(0,0,0,.4);text-shadow:0 0 10px rgba(68,136,255,.7)}
+  display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  font-family:var(--font);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 10px;border-radius:16px;cursor:pointer;border:1px solid;
+  user-select:none;white-space:nowrap;background:none;transition:opacity .1s}
+.btn:hover{opacity:.8}
+.btn:active{opacity:.6}
+.btn-cy{border-color:rgba(0,210,230,.6);color:#5EEEFF}
+.btn-gr{border-color:rgba(57,255,20,.6);color:#55FF22}
+.btn-am{border-color:rgba(255,200,0,.6);color:#FFD740}
+.btn-vi{border-color:rgba(180,100,255,.6);color:#CC88FF}
+.btn-pk{border-color:rgba(255,77,166,.6);color:#FF4DA6}
+.btn-bl{border-color:rgba(68,136,255,.6);color:#6699FF}
 
 /* ── ICON BUTTONS ── */
-.icon-btn{width:26px;height:26px;display:flex;align-items:center;justify-content:center;
-  border-radius:6px;font-size:9px;cursor:pointer;transition:all .12s;border:1px solid;
-  user-select:none;background:none;font-family:inherit;position:relative;overflow:hidden}
-.icon-btn:hover{transform:translateY(-1px) scale(1.08);filter:brightness(1.3)}
-.icon-btn:active{transform:scale(.84)}
-.icon-btn-cy{background:rgba(0,210,230,.12)!important;border-color:rgba(0,210,230,.4)!important;color:rgba(0,245,255,.8);box-shadow:0 0 8px rgba(0,210,230,.15)}
-.icon-btn-gr{background:rgba(57,200,30,.12)!important;border-color:rgba(57,200,30,.4)!important;color:rgba(57,255,20,.8);box-shadow:0 0 8px rgba(57,200,30,.15)}
+.icon-btn{width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  border-radius:5px;font-size:9px;cursor:pointer;border:1px solid;
+  user-select:none;background:none;font-family:inherit;transition:opacity .1s}
+.icon-btn:hover{opacity:.7}
+.icon-btn-cy{border-color:rgba(0,210,230,.4);color:rgba(0,245,255,.8)}
+.icon-btn-gr{border-color:rgba(57,200,30,.4);color:rgba(57,255,20,.8)}
 
 /* ── SONG ITEMS ── */
 .song-item{
-  display:flex;align-items:center;gap:7px;padding:6px 8px;
-  border-radius:8px;cursor:pointer;
-  transition:all .18s;
-  background:rgba(255,255,255,.018);
-  border:1px solid rgba(255,255,255,.04);
-  border-left:3px solid transparent}
-.song-item:hover{
-  background:linear-gradient(90deg,rgba(212,168,67,.1),rgba(212,168,67,.03));
-  border-left-color:rgba(212,168,67,.7);
-  border-color:rgba(212,168,67,.15);
-  transform:translateX(2px)}
-.song-item.selected{
-  background:linear-gradient(90deg,rgba(57,255,20,.1),rgba(57,255,20,.03));
-  border-left-color:#39FF14;border-color:rgba(57,255,20,.18)}
-.song-item.now-playing{
-  background:linear-gradient(90deg,rgba(212,168,67,.18),rgba(212,168,67,.04));
-  border-left-color:#D4A843;border-color:rgba(212,168,67,.25)}
-.song-item img{
-  width:48px;height:32px;object-fit:cover;border-radius:5px;flex-shrink:0;
-  border:1px solid rgba(255,255,255,.12)}
-.song-title{font-family:var(--font-body);font-size:10px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.9);line-height:1.35}
-.song-channel{font-family:var(--font-ui);font-size:7.5px;color:rgba(0,245,255,.5);text-transform:uppercase;letter-spacing:.08em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+  display:flex;align-items:center;gap:6px;padding:5px 7px;
+  border-radius:6px;cursor:pointer;
+  border-left:2px solid transparent;
+  background:rgba(255,255,255,.015);
+  transition:background .12s}
+.song-item:hover{background:rgba(212,168,67,.08);border-left-color:rgba(212,168,67,.6)}
+.song-item.selected{background:rgba(57,255,20,.07);border-left-color:#39FF14}
+.song-item.now-playing{background:rgba(212,168,67,.12);border-left-color:#D4A843}
+.song-item img{width:46px;height:30px;object-fit:cover;border-radius:4px;flex-shrink:0}
+.song-title{font-size:9.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.88)}
+.song-channel{font-size:7px;color:rgba(0,245,255,.5);text-transform:uppercase;letter-spacing:.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
 
 /* ── QUEUE NUMBER ── */
-.queue-num{width:19px;height:19px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-ui);font-size:7.5px;font-weight:700;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35)}
-.queue-num.active{background:rgba(212,168,67,.3);border-color:rgba(212,168,67,.6);color:#D4A843}
+.queue-num{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:7px;font-weight:700;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35)}
 
-/* ── KEYBOARD KEYS ── */
+/* ── KEY BUTTONS ── */
 .key-btn{
   aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-ui);font-weight:700;font-size:.8rem;
-  border-radius:7px;cursor:pointer;user-select:none;
-  transition:all .08s;
-  background:linear-gradient(160deg,rgba(212,168,67,.16),rgba(80,45,0,.08));
-  border:1px solid rgba(212,168,67,.28);
+  font-family:var(--font);font-weight:700;font-size:.75rem;
+  border-radius:6px;cursor:pointer;user-select:none;
+  background:rgba(212,168,67,.1);
+  border:1px solid rgba(212,168,67,.25);
   color:rgba(240,192,80,.85);
-  text-shadow:0 0 8px rgba(212,168,67,.55);
-  box-shadow:0 1px 0 rgba(255,255,255,.07) inset,0 3px 6px rgba(0,0,0,.55);
-  position:relative;overflow:hidden}
-.key-btn::before{content:'';position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,.1),transparent);pointer-events:none;border-radius:7px 7px 0 0}
-.key-btn:hover{
-  background:linear-gradient(160deg,rgba(212,168,67,.38),rgba(180,110,0,.22));
-  border-color:rgba(212,168,67,1);color:#FFD878;
-  text-shadow:0 0 16px rgba(212,168,67,1);transform:translateY(-2px) scale(1.06)}
-.key-btn:active{transform:scale(.82) translateY(1px);background:rgba(212,168,67,.55)}
+  transition:background .08s}
+.key-btn:hover{background:rgba(212,168,67,.28);border-color:rgba(212,168,67,.8)}
+.key-btn:active{background:rgba(212,168,67,.5)}
 
 /* ── EQ BARS ── */
 .eq-bar{width:3px;border-radius:2px 2px 0 0;animation:eqBar .6s ease-in-out infinite alternate}
-.eq-off .eq-bar{animation:none;height:4px!important;opacity:.18}
+.eq-off .eq-bar{animation:none;height:3px!important;opacity:.15}
 
 /* ── MARQUEE ── */
-.mq-text{display:inline-block;white-space:nowrap;
-  font-family:var(--font-ui);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2.4px;
-  color:#D4A843;
-  animation:mqScroll 28s linear infinite;padding-left:50px}
+.mq-text{display:inline-block;white-space:nowrap;font-size:9.5px;font-weight:600;
+  text-transform:uppercase;letter-spacing:2px;color:var(--gold);
+  animation:mqScroll 30s linear infinite;padding-left:40px}
 
 /* ── DOT BLINK ── */
-.dot-blink{width:6px;height:6px;border-radius:50%;background:#39FF14;box-shadow:0 0 8px #39FF14;animation:neonPulse .9s ease-in-out infinite}
+.dot-blink{width:6px;height:6px;border-radius:50%;background:#39FF14;display:inline-block;
+  animation:blink .9s ease-in-out infinite}
 
 /* ── INPUT ── */
 input[type="text"]{
-  width:100%;
-  background:rgba(4,1,18,.95);
-  color:#fff;padding:9px 38px 9px 14px;border-radius:10px;
-  font-family:var(--font-body);font-size:12px;outline:none;
-  border:1px solid rgba(212,168,67,.32);
-  transition:border-color .22s,box-shadow .22s;
-  box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
-input[type="text"]::placeholder{color:rgba(212,168,67,.32);font-style:italic;font-weight:400}
-input[type="text"]:focus{
-  border-color:rgba(212,168,67,.85);
-  box-shadow:0 0 18px rgba(212,168,67,.22),inset 0 2px 6px rgba(0,0,0,.5)}
+  width:100%;background:rgba(4,1,18,.95);
+  color:#fff;padding:8px 36px 8px 12px;border-radius:8px;
+  font-family:var(--font);font-size:11px;outline:none;
+  border:1px solid rgba(212,168,67,.3);transition:border-color .15s}
+input[type="text"]::placeholder{color:rgba(212,168,67,.3);font-style:italic}
+input[type="text"]:focus{border-color:rgba(212,168,67,.75)}
 
-/* ── NOTIFICATION TOAST ── */
+/* ── NOTIFICATION ── */
 #notif{
-  position:fixed;bottom:44px;right:18px;z-index:9999;
-  background:rgba(4,1,18,.99);
-  padding:9px 22px;border-radius:30px;
-  font-family:var(--font-ui);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  pointer-events:none;
-  color:#F0C050;text-shadow:0 0 12px rgba(212,168,67,.8);
-  border:1px solid rgba(212,168,67,.5);
-  box-shadow:0 0 20px rgba(212,168,67,.15),0 8px 24px rgba(0,0,0,.7);
-  display:none}
-#notif.show{display:block;animation:notifIn .25s cubic-bezier(.22,.68,0,1.2)}
+  position:fixed;bottom:40px;right:16px;z-index:9999;
+  background:rgba(4,1,18,.99);padding:8px 18px;border-radius:24px;
+  font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  pointer-events:none;color:var(--gold2);
+  border:1px solid rgba(212,168,67,.45);
+  box-shadow:0 4px 16px rgba(0,0,0,.7);display:none}
+#notif.show{display:block;animation:fadeIn .2s ease}
 
-/* ── AD SLIDESHOW ── */
-.ad-panel{background:var(--panel-bg);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;position:relative;border:1px solid rgba(212,168,67,.22);box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 16px 40px rgba(0,0,0,.8);flex:1;min-width:0}
-.ad-panel:hover{border-color:rgba(212,168,67,.5)}
+/* ── AD PANEL ── */
+.ad-panel{background:var(--panel);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(212,168,67,.2);flex:1;min-width:0}
 .ad-slide-wrap{flex:1;position:relative;overflow:hidden;background:#000}
-.ad-slide-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .9s ease}
-.ad-slide-wrap img.active{opacity:1;animation:adFadeIn .9s ease}
-.ad-label{flex-shrink:0;padding:5px 10px;background:linear-gradient(90deg,rgba(212,168,67,.12),transparent);border-bottom:1px solid rgba(212,168,67,.14);display:flex;align-items:center;justify-content:space-between}
-.ad-dots{display:flex;gap:4px;align-items:center}
-.ad-dot{width:5px;height:5px;border-radius:50%;background:rgba(212,168,67,.2);transition:all .3s;cursor:pointer}
-.ad-dot.active{background:#D4A843;box-shadow:0 0 6px rgba(212,168,67,.7);width:14px;border-radius:3px}
-.ad-edit-btn{font-family:'Rajdhani',sans-serif;font-size:7.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border-radius:5px;padding:2px 7px;background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.3);color:rgba(212,168,67,.55);transition:all .15s;line-height:1.4}
-.ad-edit-btn:hover{background:rgba(212,168,67,.18);border-color:rgba(212,168,67,.65);color:#FFD740}
+.ad-slide-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s}
+.ad-slide-wrap img.active{opacity:1;animation:imgFade .8s ease}
+.ad-dot{width:5px;height:5px;border-radius:50%;background:rgba(212,168,67,.2);cursor:pointer;transition:background .2s}
+.ad-dot.active{background:var(--gold);width:12px;border-radius:2px}
+.ad-edit-btn{font-family:var(--font);font-size:7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  cursor:pointer;border-radius:4px;padding:2px 6px;background:transparent;
+  border:1px solid rgba(212,168,67,.25);color:rgba(212,168,67,.5);transition:opacity .1s}
+.ad-edit-btn:hover{opacity:.7}
 
 /* ── AD MODAL ── */
 #adModal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center}
 #adModal.open{display:flex}
-#adModalBg{position:absolute;inset:0;background:rgba(0,0,0,.8)}
-#adModalBox{position:relative;z-index:1;background:linear-gradient(145deg,rgba(6,2,22,.99),rgba(3,1,14,.99));border:1px solid rgba(212,168,67,.35);border-radius:16px;width:420px;max-width:94vw;box-shadow:0 0 60px rgba(0,0,0,.9),inset 0 1px 0 rgba(212,168,67,.12);overflow:hidden}
-#adModalHead{padding:12px 16px;border-bottom:1px solid rgba(212,168,67,.15);background:linear-gradient(90deg,rgba(212,168,67,.1),transparent);display:flex;align-items:center;justify-content:space-between}
-#adModalTitle{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(240,192,80,.9)}
-#adModalClose{background:none;border:none;color:rgba(212,168,67,.4);font-size:16px;cursor:pointer;line-height:1;padding:2px 5px;border-radius:4px;transition:all .15s}
-#adModalClose:hover{color:#FFD740;background:rgba(212,168,67,.1)}
-#adModalBody{padding:14px 16px;display:flex;flex-direction:column;gap:8px;max-height:55vh;overflow-y:auto}
-#adModalBody::-webkit-scrollbar{width:3px}
-#adModalBody::-webkit-scrollbar-track{background:transparent}
-#adModalBody::-webkit-scrollbar-thumb{background:rgba(212,168,67,.3);border-radius:2px}
-.ad-url-row{display:flex;gap:6px;align-items:center}
-.ad-url-row input{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(212,168,67,.2);border-radius:7px;padding:5px 10px;font-family:'Exo 2',sans-serif;font-size:10px;color:rgba(212,168,67,.85);outline:none;transition:border-color .15s}
-.ad-url-row input:focus{border-color:rgba(212,168,67,.55)}
-.ad-url-row input::placeholder{color:rgba(212,168,67,.25)}
-.ad-url-del{background:none;border:1px solid rgba(255,77,100,.3);border-radius:6px;color:rgba(255,77,100,.5);font-size:11px;cursor:pointer;padding:3px 7px;line-height:1;transition:all .15s;font-family:'Rajdhani',sans-serif}
-.ad-url-del:hover{background:rgba(255,77,100,.1);border-color:rgba(255,77,100,.65);color:#FF6688}
-#adModalFoot{padding:10px 16px;border-top:1px solid rgba(212,168,67,.1);display:flex;gap:8px;justify-content:flex-end;background:rgba(0,0,0,.2)}
-.ad-btn-add{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border-radius:7px;padding:6px 14px;background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.28);color:rgba(212,168,67,.65);transition:all .15s}
-.ad-btn-add:hover{background:rgba(212,168,67,.15);border-color:rgba(212,168,67,.55);color:#FFD740}
-.ad-btn-save{font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border-radius:7px;padding:6px 18px;background:linear-gradient(135deg,rgba(57,255,20,.2),rgba(20,160,8,.08));border:1px solid rgba(57,255,20,.55);color:#55FF22;transition:all .15s}
-.ad-btn-save:hover{background:linear-gradient(135deg,rgba(57,255,20,.32),rgba(20,160,8,.15))}
+#adModalBg{position:absolute;inset:0;background:rgba(0,0,0,.82)}
+#adModalBox{position:relative;z-index:1;background:#060210;border:1px solid rgba(212,168,67,.3);border-radius:12px;width:400px;max-width:94vw;box-shadow:0 8px 40px rgba(0,0,0,.9);overflow:hidden}
+#adModalHead{padding:10px 14px;border-bottom:1px solid rgba(212,168,67,.12);display:flex;align-items:center;justify-content:space-between}
+#adModalTitle{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold2)}
+#adModalClose{background:none;border:none;color:rgba(212,168,67,.4);font-size:16px;cursor:pointer;padding:2px 5px}
+#adModalClose:hover{color:var(--gold2)}
+#adModalBody{padding:12px 14px;display:flex;flex-direction:column;gap:7px;max-height:50vh;overflow-y:auto}
+.ad-url-row{display:flex;gap:5px;align-items:center}
+.ad-url-row input{flex:1}
+.ad-url-del{background:none;border:1px solid rgba(255,77,100,.3);border-radius:5px;color:rgba(255,77,100,.5);font-size:11px;cursor:pointer;padding:3px 6px;transition:opacity .1s}
+.ad-url-del:hover{opacity:.7}
+#adModalFoot{padding:8px 14px;border-top:1px solid rgba(212,168,67,.1);display:flex;gap:7px;justify-content:flex-end;background:rgba(0,0,0,.15)}
+.ad-btn-add{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:6px;padding:5px 12px;background:transparent;border:1px solid rgba(212,168,67,.25);color:rgba(212,168,67,.6);transition:opacity .1s}
+.ad-btn-add:hover{opacity:.7}
+.ad-btn-save{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:6px;padding:5px 16px;background:rgba(57,255,20,.1);border:1px solid rgba(57,255,20,.5);color:#55FF22;transition:opacity .1s}
+.ad-btn-save:hover{opacity:.7}
 </style>
 </head>
 <body>
 
-<!-- Bokeh BG (static, lightweight) -->
-<div id="bk"></div>
-
-<!-- Notification toast -->
 <div id="notif"></div>
 
 <!-- MAIN LAYOUT -->
-<div id="root" style="position:relative;z-index:1;display:flex;flex-direction:column;width:100vw;height:100vh;padding:8px 10px 34px;gap:8px">
+<div id="root" style="position:relative;z-index:1;display:flex;flex-direction:column;width:100vw;height:100vh;padding:7px 9px 32px;gap:7px">
 
-  <!-- Top neon strip -->
-  <div class="neon-strip"></div>
+  <div class="strip"></div>
 
   <!-- HEADER -->
-  <div id="header" style="flex-shrink:0;display:flex;align-items:center;gap:12px;padding:9px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(6,2,22,.98),rgba(3,0,14,.96));border:1px solid rgba(212,168,67,.42);box-shadow:0 0 40px rgba(212,168,67,.15),0 2px 0 rgba(212,168,67,.3) inset,0 20px 60px rgba(0,0,0,.8);position:relative;overflow:hidden">
-    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 5%,rgba(212,168,67,.4) 25%,rgba(255,228,80,.9) 50%,rgba(212,168,67,.4) 75%,transparent 95%)"></div>
-    <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(212,168,67,.18) 30%,rgba(212,168,67,.38) 50%,rgba(212,168,67,.18) 70%,transparent 90%)"></div>
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.03) 0%,transparent 40%);pointer-events:none"></div>
+  <div style="flex-shrink:0;display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:10px;background:rgba(6,2,22,.98);border:1px solid rgba(212,168,67,.35);box-shadow:0 2px 16px rgba(0,0,0,.7)">
 
     <!-- Logo -->
-    <div style="width:52px;height:52px;flex-shrink:0;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:1px solid rgba(212,168,67,.7);background:linear-gradient(145deg,rgba(212,168,67,.28),rgba(60,28,0,.85));box-shadow:0 0 20px rgba(212,168,67,.4),inset 0 1px 0 rgba(255,220,80,.4);position:relative;overflow:hidden">
-      <div style="position:absolute;top:0;left:0;right:0;height:48%;background:linear-gradient(180deg,rgba(255,255,255,.14),transparent)"></div>
-      <svg viewBox="0 0 24 24" width="21" height="21" fill="#D4A843" style="filter:drop-shadow(0 0 8px rgba(212,168,67,.9));position:relative;z-index:1"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-      <span style="font-family:'Rajdhani',sans-serif;font-size:6.5px;font-weight:700;color:#FFD870;letter-spacing:.14em;position:relative;z-index:1;text-shadow:0 0 8px rgba(212,168,67,.8)">VIP KTV</span>
+    <div style="width:48px;height:48px;flex-shrink:0;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:1px solid rgba(212,168,67,.6);background:rgba(212,168,67,.15)">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="#D4A843"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+      <span style="font-size:6px;font-weight:700;color:#FFD870;letter-spacing:.12em">VIP KTV</span>
     </div>
 
     <!-- Title -->
     <div style="flex-shrink:0">
-      <div style="font-family:'Rajdhani',sans-serif;font-size:7.5px;letter-spacing:.32em;color:rgba(212,168,67,.5);text-transform:uppercase;font-weight:600;margin-bottom:3px">✦ Premium Karaoke · Batam ✦</div>
-      <h1 class="gold-glow-anim" style="font-family:'Cinzel Decorative',serif;font-size:clamp(.95rem,1.9vw,1.5rem);font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;color:#D4A843">THE LINKS • VIP KTV</h1>
+      <div style="font-size:7px;letter-spacing:.28em;color:rgba(212,168,67,.5);text-transform:uppercase;font-weight:600;margin-bottom:2px">✦ Premium Karaoke · Batam ✦</div>
+      <h1 style="font-size:clamp(.9rem,1.8vw,1.4rem);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#D4A843">THE LINKS • VIP KTV</h1>
     </div>
 
     <!-- Now Playing -->
-    <div id="npBar" style="flex:1;margin:0 10px;display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(4,1,18,.98),rgba(8,2,24,.92));border:1px solid rgba(212,168,67,.32);position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(212,168,67,.15),0 8px 30px rgba(0,0,0,.6)">
-      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 5%,rgba(212,168,67,.4) 30%,rgba(255,228,80,.7) 50%,rgba(212,168,67,.4) 70%,transparent 95%)"></div>
-      <div id="npDot" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#222;box-shadow:0 0 0 2px rgba(255,255,255,.06)"></div>
-      <img id="npThumb" alt="" style="width:50px;height:33px;object-fit:cover;border-radius:6px;flex-shrink:0;border:1px solid rgba(212,168,67,.3);display:none"/>
+    <div id="npBar" style="flex:1;margin:0 8px;display:flex;align-items:center;gap:9px;padding:7px 12px;border-radius:10px;background:rgba(4,1,18,.98);border:1px solid rgba(212,168,67,.28)">
+      <div id="npDot" style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#222"></div>
+      <img id="npThumb" alt="" style="width:46px;height:30px;object-fit:cover;border-radius:5px;flex-shrink:0;border:1px solid rgba(212,168,67,.25);display:none"/>
       <div style="flex:1;min-width:0">
-        <div id="npTitle" style="font-family:'Exo 2',sans-serif;font-size:10.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(240,192,80,.38);font-style:italic">Tidak ada lagu diputar</div>
-        <div id="npChan" style="font-family:'Rajdhani',sans-serif;font-size:8px;color:rgba(0,245,255,.45);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none;letter-spacing:.08em;text-transform:uppercase"></div>
+        <div id="npTitle" style="font-size:10px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(240,192,80,.35);font-style:italic">Tidak ada lagu diputar</div>
+        <div id="npChan" style="font-size:7.5px;color:rgba(0,245,255,.4);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none;letter-spacing:.06em;text-transform:uppercase"></div>
       </div>
-      <div id="eqBars" class="eq-off" style="display:flex;align-items:flex-end;gap:2.5px;height:20px;flex-shrink:0">
-        <div class="eq-bar" style="background:linear-gradient(180deg,#FF4DA6,rgba(122,0,53,.4));height:30%;animation-delay:0s"></div>
-        <div class="eq-bar" style="background:linear-gradient(180deg,#CC88FF,rgba(102,0,170,.4));height:80%;animation-delay:.15s"></div>
-        <div class="eq-bar" style="background:linear-gradient(180deg,#00F5FF,rgba(0,85,102,.4));height:50%;animation-delay:.07s"></div>
-        <div class="eq-bar" style="background:linear-gradient(180deg,#39FF14,rgba(10,80,0,.4));height:100%;animation-delay:.22s"></div>
-        <div class="eq-bar" style="background:linear-gradient(180deg,#FFD700,rgba(102,68,0,.4));height:40%;animation-delay:.04s"></div>
-        <div class="eq-bar" style="background:linear-gradient(180deg,#FF8C00,rgba(100,35,0,.4));height:65%;animation-delay:.11s"></div>
+      <div id="eqBars" class="eq-off" style="display:flex;align-items:flex-end;gap:2px;height:18px;flex-shrink:0">
+        <div class="eq-bar" style="background:#FF4DA6;height:30%;animation-delay:0s"></div>
+        <div class="eq-bar" style="background:#CC88FF;height:80%;animation-delay:.15s"></div>
+        <div class="eq-bar" style="background:#00F5FF;height:50%;animation-delay:.07s"></div>
+        <div class="eq-bar" style="background:#39FF14;height:100%;animation-delay:.22s"></div>
+        <div class="eq-bar" style="background:#FFD700;height:40%;animation-delay:.04s"></div>
+        <div class="eq-bar" style="background:#FF8C00;height:65%;animation-delay:.11s"></div>
       </div>
-      <div id="npStatus" style="flex-shrink:0;font-family:'Rajdhani',sans-serif;font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(212,168,67,.45);padding:4px 10px;border-radius:20px;border:1px solid rgba(212,168,67,.18);background:linear-gradient(135deg,rgba(212,168,67,.08),rgba(212,168,67,.03))">STANDBY</div>
+      <div id="npStatus" style="flex-shrink:0;font-size:7.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(212,168,67,.4);padding:3px 8px;border-radius:16px;border:1px solid rgba(212,168,67,.15)">STANDBY</div>
     </div>
 
     <!-- Search + controls -->
-    <div style="display:flex;flex-direction:column;gap:5px;flex:1;max-width:500px">
+    <div style="display:flex;flex-direction:column;gap:4px;flex:1;max-width:480px">
       <div style="position:relative">
         <input type="text" id="searchInput" placeholder="Ketik lagu atau artis..."/>
-        <svg style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:rgba(212,168,67,.4);width:11px;height:11px;pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:rgba(212,168,67,.4);width:10px;height:10px;pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       </div>
-      <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
-        <button class="btn btn-cy" onclick="doSearch()"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> CARI</button>
+      <div style="display:flex;gap:3px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-cy" onclick="doSearch()">🔍 CARI</button>
         <button class="btn btn-gr" onclick="onPlay()">▶ PLAY</button>
         <button class="btn btn-am" onclick="onPause()">⏸ PAUSE</button>
         <button class="btn btn-vi" onclick="onNext()">⏭ NEXT</button>
         <button class="btn btn-pk" onclick="onClear()">✕ CLR</button>
         <button class="btn btn-bl" onclick="openPlayer()">📺 LAYAR 2</button>
-        <div style="display:inline-flex;align-items:center;gap:5px;font-family:'Rajdhani',sans-serif;font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:4px 10px;border-radius:20px;color:#55FF22;border:1px solid rgba(57,255,20,.55);background:linear-gradient(135deg,rgba(57,255,20,.12),rgba(57,255,20,.04));text-shadow:0 0 10px rgba(57,255,20,.7)">
+        <div style="display:inline-flex;align-items:center;gap:4px;font-size:7.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:3px 8px;border-radius:16px;color:#55FF22;border:1px solid rgba(57,255,20,.45)">
           <div class="dot-blink"></div> AUTO-PLAY ON
         </div>
       </div>
     </div>
 
     <!-- Clock + Fullscreen -->
-    <div style="flex-shrink:0;display:flex;flex-direction:column;gap:5px;align-items:center">
-      <div style="padding:8px 15px;border-radius:12px;text-align:center;background:linear-gradient(145deg,rgba(6,2,20,.98),rgba(3,0,12,.95));border:1px solid rgba(212,168,67,.55);box-shadow:0 0 20px rgba(212,168,67,.2),inset 0 1px 0 rgba(212,168,67,.28);min-width:108px;position:relative;overflow:hidden">
-        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.04) 0%,transparent 40%);pointer-events:none"></div>
-        <div id="clock" style="font-size:1.2rem;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.12em;color:#FFD840;text-shadow:0 0 10px rgba(212,168,67,.75)">00:00:00</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:7.5px;letter-spacing:.3em;color:rgba(212,168,67,.45);text-transform:uppercase;font-weight:600;margin-top:2px">Jam Sekarang</div>
+    <div style="flex-shrink:0;display:flex;flex-direction:column;gap:4px;align-items:center">
+      <div style="padding:7px 13px;border-radius:10px;text-align:center;background:rgba(6,2,20,.98);border:1px solid rgba(212,168,67,.45);min-width:100px">
+        <div id="clock" style="font-size:1.15rem;font-weight:700;letter-spacing:.1em;color:#FFD840">00:00:00</div>
+        <div style="font-size:7px;letter-spacing:.25em;color:rgba(212,168,67,.4);text-transform:uppercase;margin-top:2px">Jam Sekarang</div>
       </div>
-      <button id="fsBtn" onclick="toggleFullscreen()" style="width:100%;min-height:32px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;background:linear-gradient(135deg,rgba(212,168,67,.14),rgba(212,168,67,.05));border:1px solid rgba(212,168,67,.45);color:#D4A843;text-shadow:0 0 10px rgba(212,168,67,.6);transition:all .18s;touch-action:manipulation;position:relative;overflow:hidden">
-        <div style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent);pointer-events:none"></div>
-        <svg id="fsIcon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      <button id="fsBtn" onclick="toggleFullscreen()" style="width:100%;min-height:30px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;font-family:var(--font);font-weight:700;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.4);color:#D4A843;transition:opacity .1s">
+        <svg id="fsIcon" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
         <span id="fsLabel">FULLSCREEN</span>
       </button>
     </div>
   </div>
 
-  <!-- Strip -->
-  <div class="neon-strip" style="opacity:.6"></div>
+  <div class="strip" style="opacity:.5"></div>
 
   <!-- MAIN GRID -->
-  <div style="flex:1;min-height:0;display:grid;grid-template-columns:26fr 40fr 26fr 12fr;gap:8px">
+  <div style="flex:1;min-height:0;display:grid;grid-template-columns:26fr 40fr 26fr 12fr;gap:7px">
 
     <!-- YT RESULTS -->
-    <div class="panel panel-cyan" style="position:relative">
-      <div class="ncorner ncorner-tl"></div><div class="ncorner ncorner-tr"></div>
-      <div class="ncorner ncorner-bl"></div><div class="ncorner ncorner-br"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;flex-shrink:0;position:relative;z-index:2;background:linear-gradient(90deg,rgba(0,210,230,.1),rgba(0,210,230,.02),transparent);border-bottom:1px solid rgba(0,210,230,.15)">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:7px;color:rgba(0,245,255,.9);text-shadow:0 0 12px rgba(0,210,230,.7)">
-          <div style="width:3px;height:14px;border-radius:2px;background:linear-gradient(180deg,#00F5FF,rgba(0,85,102,.3));box-shadow:0 0 8px rgba(0,245,255,.5)"></div>YT RESULTS
-        </div>
-        <div style="display:flex;gap:4px;align-items:center">
-          <span id="srCount" style="font-family:'Rajdhani',sans-serif;font-size:8px;color:rgba(0,245,255,.45);font-weight:700;letter-spacing:.12em;margin-right:4px">0</span>
+    <div class="panel panel-cyan">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;flex-shrink:0;border-bottom:1px solid rgba(0,210,230,.12)">
+        <span style="font-size:8.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(0,245,255,.85)">YT RESULTS</span>
+        <div style="display:flex;gap:3px;align-items:center">
+          <span id="srCount" style="font-size:7.5px;color:rgba(0,245,255,.4);font-weight:700;margin-right:3px">0</span>
           <button class="icon-btn icon-btn-cy" onclick="navigateSR(-1)">▲</button>
           <button class="icon-btn icon-btn-cy" onclick="navigateSR(1)">▼</button>
         </div>
       </div>
       <div class="panel-body" id="srList">
-        <div style="text-align:center;margin:auto;display:flex;flex-direction:column;align-items:center;gap:7px;padding:20px 0">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(0,245,255,.15)" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-          <p style="font-size:9px;color:rgba(255,255,255,.2);font-style:italic">Ketik lagu lalu tekan Cari<br/>atau Enter</p>
-        </div>
+        <div style="text-align:center;margin:auto;padding:20px 0;color:rgba(255,255,255,.18);font-size:8.5px;font-style:italic">Ketik lagu lalu tekan Cari</div>
       </div>
     </div>
 
-    <!-- KEYBOARD + ADS WRAPPER -->
-    <div style="display:flex;flex-direction:column;gap:8px;min-height:0">
+    <!-- KEYBOARD + ADS -->
+    <div style="display:flex;flex-direction:column;gap:7px;min-height:0">
 
       <!-- KEYBOARD -->
-      <div class="panel" style="position:relative;flex-shrink:0">
-        <div class="ncorner ncorner-tl"></div><div class="ncorner ncorner-tr"></div>
-        <div class="ncorner ncorner-bl"></div><div class="ncorner ncorner-br"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;flex-shrink:0;position:relative;z-index:2;background:linear-gradient(90deg,rgba(212,168,67,.12),rgba(212,168,67,.03),transparent);border-bottom:1px solid rgba(212,168,67,.15)">
-          <div style="font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:7px;color:rgba(240,192,80,.95);text-shadow:0 0 12px rgba(212,168,67,.7)">
-            <div style="width:3px;height:14px;border-radius:2px;background:linear-gradient(180deg,#FFE08A,rgba(124,83,0,.3));box-shadow:0 0 8px rgba(212,168,67,.5)"></div>⌨ KEYBOARD VIRTUAL
-          </div>
-          <span id="capsLabel" style="font-family:'Rajdhani',sans-serif;font-size:8.5px;color:rgba(212,168,67,.45);letter-spacing:.2em;font-weight:600">CAPS ON</span>
+      <div class="panel" style="flex-shrink:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;flex-shrink:0;border-bottom:1px solid rgba(212,168,67,.12)">
+          <span style="font-size:8.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(240,192,80,.9)">⌨ KEYBOARD VIRTUAL</span>
+          <span id="capsLabel" style="font-size:8px;color:rgba(212,168,67,.4);letter-spacing:.18em;font-weight:600">CAPS ON</span>
         </div>
-        <div style="padding:7px 10px;display:flex;flex-direction:column;gap:6px;position:relative;z-index:2">
+        <div style="padding:6px 9px;display:flex;flex-direction:column;gap:5px">
           <div id="kbGrid" style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px"></div>
-          <div style="display:grid;grid-template-columns:1fr 2fr 1fr 1fr;gap:4px;height:34px;flex-shrink:0">
-            <button id="shiftBtn" onclick="toggleShift()" style="border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:9px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;gap:4px;background:linear-gradient(135deg,rgba(255,200,0,.28),rgba(180,140,0,.12));border:1px solid rgba(255,200,0,.72);color:#FFD740;box-shadow:0 0 12px rgba(255,200,0,.22)">⇧ SHIFT</button>
-            <button onclick="kbSpace()" style="border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:9px;letter-spacing:.12em;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;background:rgba(212,168,67,.05);border:1px solid rgba(212,168,67,.2);color:rgba(212,168,67,.4)">— SPASI —</button>
-            <button onclick="doSearch()" style="border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:9px;letter-spacing:.12em;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;gap:3px;background:linear-gradient(135deg,rgba(57,255,20,.2),rgba(20,160,8,.08));border:1px solid rgba(57,255,20,.65);color:#55FF22">🔍 CARI</button>
-            <button onclick="kbDel()" style="border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:9px;letter-spacing:.12em;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;background:rgba(255,77,100,.1);border:1px solid rgba(255,77,100,.55);color:#FF6688">⌫ DEL</button>
+          <div style="display:grid;grid-template-columns:1fr 2fr 1fr 1fr;gap:3px;height:32px;flex-shrink:0">
+            <button id="shiftBtn" onclick="toggleShift()" style="border-radius:7px;font-family:var(--font);font-weight:700;font-size:8px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(255,200,0,.15);border:1px solid rgba(255,200,0,.6);color:#FFD740;transition:opacity .1s">⇧ SHIFT</button>
+            <button onclick="kbSpace()" style="border-radius:7px;font-family:var(--font);font-weight:600;font-size:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(212,168,67,.04);border:1px solid rgba(212,168,67,.18);color:rgba(212,168,67,.38)">— SPASI —</button>
+            <button onclick="doSearch()" style="border-radius:7px;font-family:var(--font);font-weight:700;font-size:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(57,255,20,.1);border:1px solid rgba(57,255,20,.55);color:#55FF22">🔍 CARI</button>
+            <button onclick="kbDel()" style="border-radius:7px;font-family:var(--font);font-weight:700;font-size:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(255,77,100,.08);border:1px solid rgba(255,77,100,.45);color:#FF6688">⌫ DEL</button>
           </div>
-          <div style="background:rgba(2,0,10,.95);border:1px solid rgba(212,168,67,.2);border-radius:9px;padding:4px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;box-shadow:inset 0 2px 6px rgba(0,0,0,.5)">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="rgba(212,168,67,.35)" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-            <span id="kbDisplay" style="font-family:'Exo 2',sans-serif;font-size:11.5px;color:rgba(212,168,67,.75);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600">&nbsp;</span>
+          <div style="background:rgba(2,0,10,.95);border:1px solid rgba(212,168,67,.18);border-radius:7px;padding:4px 10px;display:flex;align-items:center;gap:7px;flex-shrink:0">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="rgba(212,168,67,.3)" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+            <span id="kbDisplay" style="font-size:11px;color:rgba(212,168,67,.7);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600">&nbsp;</span>
           </div>
         </div>
       </div>
 
-      <!-- 2 AD SLIDESHOW PANELS -->
-      <div style="display:flex;gap:8px;flex:1;min-height:0">
+      <!-- ADS -->
+      <div style="display:flex;gap:7px;flex:1;min-height:0">
 
-        <!-- IKLAN 1 -->
         <div class="ad-panel">
-          <div class="ad-label">
-            <div style="font-family:'Rajdhani',sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;display:flex;align-items:center;gap:6px;color:rgba(240,192,80,.8);text-shadow:0 0 10px rgba(212,168,67,.5)">
-              <div style="width:3px;height:12px;border-radius:2px;background:linear-gradient(180deg,#FFD740,rgba(100,60,0,.3));box-shadow:0 0 6px rgba(212,168,67,.4)"></div>
-              IKLAN 1
-            </div>
-            <div style="display:flex;align-items:center;gap:5px">
+          <div style="padding:4px 9px;border-bottom:1px solid rgba(212,168,67,.12);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+            <span style="font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,192,80,.75)">IKLAN 1</span>
+            <div style="display:flex;align-items:center;gap:4px">
               <button class="ad-edit-btn" onclick="openAdModal(1)">✎ UBAH</button>
-              <div class="ad-dots" id="adDots1"></div>
+              <div id="adDots1" style="display:flex;gap:3px;align-items:center"></div>
             </div>
           </div>
           <div class="ad-slide-wrap" id="adWrap1">
-            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:1;pointer-events:none" id="adPlaceholder1">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(212,168,67,.18)" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m9 9 6 6m0-6-6 6"/></svg>
-              <p style="font-family:'Rajdhani',sans-serif;font-size:8px;color:rgba(212,168,67,.25);letter-spacing:.18em;text-transform:uppercase;text-align:center">Pasang Gambar<br/>Iklan Di Sini</p>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;pointer-events:none" id="adPlaceholder1">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(212,168,67,.15)" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m9 9 6 6m0-6-6 6"/></svg>
+              <p style="font-size:7.5px;color:rgba(212,168,67,.22);letter-spacing:.14em;text-transform:uppercase;text-align:center">Pasang Gambar<br/>Iklan Di Sini</p>
             </div>
           </div>
-          <div style="flex-shrink:0;height:3px;background:linear-gradient(90deg,#FF4DA6,#CC88FF,#00F5FF,#39FF14,#FFD700,#FF4DA6);opacity:.6"></div>
+          <div class="strip" style="opacity:.5"></div>
         </div>
 
-        <!-- IKLAN 2 -->
-        <div class="ad-panel">
-          <div class="ad-label">
-            <div style="font-family:'Rajdhani',sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;display:flex;align-items:center;gap:6px;color:rgba(0,245,255,.75);text-shadow:0 0 10px rgba(0,210,230,.5)">
-              <div style="width:3px;height:12px;border-radius:2px;background:linear-gradient(180deg,#00F5FF,rgba(0,60,80,.3));box-shadow:0 0 6px rgba(0,245,255,.4)"></div>
-              IKLAN 2
-            </div>
-            <div style="display:flex;align-items:center;gap:5px">
-              <button class="ad-edit-btn" style="border-color:rgba(0,245,255,.3);color:rgba(0,245,255,.55)" onmouseover="this.style.borderColor='rgba(0,245,255,.65)';this.style.color='#00F5FF';this.style.background='rgba(0,245,255,.1)'" onmouseout="this.style.borderColor='rgba(0,245,255,.3)';this.style.color='rgba(0,245,255,.55)';this.style.background='rgba(212,168,67,.08)'" onclick="openAdModal(2)">✎ UBAH</button>
-              <div class="ad-dots" id="adDots2"></div>
+        <div class="ad-panel" style="border-color:rgba(0,210,230,.2)">
+          <div style="padding:4px 9px;border-bottom:1px solid rgba(0,210,230,.12);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+            <span style="font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,245,255,.7)">IKLAN 2</span>
+            <div style="display:flex;align-items:center;gap:4px">
+              <button class="ad-edit-btn" style="border-color:rgba(0,245,255,.25);color:rgba(0,245,255,.5)" onclick="openAdModal(2)">✎ UBAH</button>
+              <div id="adDots2" style="display:flex;gap:3px;align-items:center"></div>
             </div>
           </div>
           <div class="ad-slide-wrap" id="adWrap2">
-            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:1;pointer-events:none" id="adPlaceholder2">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(0,245,255,.18)" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m9 9 6 6m0-6-6 6"/></svg>
-              <p style="font-family:'Rajdhani',sans-serif;font-size:8px;color:rgba(0,245,255,.25);letter-spacing:.18em;text-transform:uppercase;text-align:center">Pasang Gambar<br/>Iklan Di Sini</p>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;pointer-events:none" id="adPlaceholder2">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(0,245,255,.15)" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m9 9 6 6m0-6-6 6"/></svg>
+              <p style="font-size:7.5px;color:rgba(0,245,255,.22);letter-spacing:.14em;text-transform:uppercase;text-align:center">Pasang Gambar<br/>Iklan Di Sini</p>
             </div>
           </div>
-          <div style="flex-shrink:0;height:3px;background:linear-gradient(90deg,#00F5FF,#CC88FF,#FF4DA6,#39FF14,#00F5FF);opacity:.6"></div>
+          <div class="strip" style="opacity:.5"></div>
         </div>
 
       </div>
     </div>
-    <!-- /KEYBOARD + ADS -->
 
     <!-- ANTREAN -->
-    <div class="panel panel-green" style="position:relative">
-      <div class="ncorner ncorner-tl"></div><div class="ncorner ncorner-tr"></div>
-      <div class="ncorner ncorner-bl"></div><div class="ncorner ncorner-br"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;flex-shrink:0;position:relative;z-index:2;background:linear-gradient(90deg,rgba(57,200,30,.1),rgba(57,200,30,.02),transparent);border-bottom:1px solid rgba(57,200,30,.15)">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:7px;color:rgba(57,255,20,.9);text-shadow:0 0 12px rgba(57,200,30,.7)">
-          <div style="width:3px;height:14px;border-radius:2px;background:linear-gradient(180deg,#39FF14,rgba(10,64,8,.3));box-shadow:0 0 8px rgba(57,255,20,.5)"></div>☰ ANTREAN
-        </div>
-        <div style="display:flex;gap:4px;align-items:center">
-          <span id="plCount" style="font-family:'Rajdhani',sans-serif;font-size:8px;color:rgba(57,255,20,.5);font-weight:700;margin-right:4px;letter-spacing:.1em">0 lagu</span>
+    <div class="panel panel-green">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;flex-shrink:0;border-bottom:1px solid rgba(57,200,30,.12)">
+        <span style="font-size:8.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(57,255,20,.85)">☰ ANTREAN</span>
+        <div style="display:flex;gap:3px;align-items:center">
+          <span id="plCount" style="font-size:7.5px;color:rgba(57,255,20,.45);font-weight:700;margin-right:3px">0 lagu</span>
           <button class="icon-btn icon-btn-gr" onclick="moveUp()">▲</button>
           <button class="icon-btn icon-btn-gr" onclick="moveDown()">▼</button>
         </div>
       </div>
       <div class="panel-body" id="plList"></div>
-      <div style="flex-shrink:0;padding:6px 12px;border-top:1px solid rgba(57,200,30,.1);background:linear-gradient(90deg,rgba(57,200,30,.04),transparent);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2">
-        <span style="font-family:'Rajdhani',sans-serif;font-size:8.5px;color:rgba(255,255,255,.22);letter-spacing:.1em;text-transform:uppercase">Total: <strong id="plTotal" style="color:rgba(57,255,20,.7);text-shadow:0 0 8px rgba(57,255,20,.4)">0</strong></span>
-        <span style="font-family:'Rajdhani',sans-serif;font-size:7.5px;color:rgba(212,168,67,.32);letter-spacing:.16em;text-transform:uppercase;font-weight:600">Desktop Mode</span>
+      <div style="flex-shrink:0;padding:5px 10px;border-top:1px solid rgba(57,200,30,.1);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:8px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.08em">Total: <strong id="plTotal" style="color:rgba(57,255,20,.65)">0</strong></span>
+        <span style="font-size:7px;color:rgba(212,168,67,.28);letter-spacing:.14em;text-transform:uppercase">Desktop Mode</span>
       </div>
     </div>
 
     <!-- QR REMOTE -->
-    <div class="panel panel-pink" style="position:relative">
-      <div class="ncorner ncorner-tl"></div><div class="ncorner ncorner-tr"></div>
-      <div class="ncorner ncorner-bl"></div><div class="ncorner ncorner-br"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;flex-shrink:0;position:relative;z-index:2;background:linear-gradient(90deg,rgba(255,77,166,.1),rgba(255,77,166,.02),transparent);border-bottom:1px solid rgba(255,77,166,.15)">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:7px;color:rgba(255,77,166,.95);text-shadow:0 0 12px rgba(255,77,166,.7)">
-          <div style="width:3px;height:14px;border-radius:2px;background:linear-gradient(180deg,#FF4DA6,rgba(122,0,53,.3));box-shadow:0 0 8px rgba(255,77,166,.5)"></div>QR REMOTE
-        </div>
+    <div class="panel panel-pink">
+      <div style="padding:7px 10px;flex-shrink:0;border-bottom:1px solid rgba(255,77,166,.12)">
+        <span style="font-size:8.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,77,166,.9)">QR REMOTE</span>
       </div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px 10px;position:relative;z-index:2">
-        <div style="padding:6px;background:#fff;border-radius:10px;display:inline-block;box-shadow:0 0 20px rgba(255,77,166,.35)">
-          <img id="qrImg" alt="QR" style="width:82px;height:82px;display:block;border-radius:5px"/>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:10px 8px">
+        <div style="padding:5px;background:#fff;border-radius:8px;box-shadow:0 0 12px rgba(255,77,166,.3)">
+          <img id="qrImg" alt="QR" style="width:78px;height:78px;display:block;border-radius:4px"/>
         </div>
-        <p style="font-family:'Rajdhani',sans-serif;font-size:8.5px;color:rgba(255,255,255,.28);text-align:center;line-height:2;letter-spacing:.14em;text-transform:uppercase">Scan QR<br/>untuk kontrol<br/>dari HP</p>
+        <p style="font-size:8px;color:rgba(255,255,255,.25);text-align:center;line-height:2;letter-spacing:.12em;text-transform:uppercase">Scan QR<br/>untuk kontrol<br/>dari HP</p>
       </div>
-      <div style="flex-shrink:0;padding:7px 10px;border-top:1px solid rgba(255,77,166,.1);background:linear-gradient(90deg,rgba(255,77,166,.05),transparent);display:flex;justify-content:center;position:relative;z-index:2">
-        <span style="font-family:'Rajdhani',sans-serif;font-size:7.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,77,166,.5)">WiFi Sync ✦ Firebase</span>
+      <div style="flex-shrink:0;padding:6px 8px;border-top:1px solid rgba(255,77,166,.1);text-align:center">
+        <span style="font-size:7px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,77,166,.45)">WiFi Sync ✦ Firebase</span>
       </div>
     </div>
 
-  </div><!-- /grid -->
+  </div>
 
-  <!-- Bottom strip -->
-  <div class="neon-strip" style="opacity:.5"></div>
-</div><!-- /root -->
+  <div class="strip" style="opacity:.4"></div>
+</div>
 
 <!-- Marquee -->
-<div style="position:fixed;bottom:0;left:0;width:100%;height:34px;z-index:200;display:flex;align-items:center;overflow:hidden;background:rgba(4,1,18,.99);border-top:1px solid rgba(212,168,67,.2)">
-  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,#FF4DA6,#CC88FF,#00F5FF,#39FF14,#FFD700,#FF8C00,#FF4DA6)"></div>
-  <div style="flex-shrink:0;padding:0 12px 0 14px;font-family:'Rajdhani',sans-serif;font-size:7.5px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;white-space:nowrap;border-right:1px solid rgba(212,168,67,.18);color:#D4A843">✦ THE LINKS VIP KTV ✦</div>
+<div style="position:fixed;bottom:0;left:0;width:100%;height:30px;z-index:200;display:flex;align-items:center;overflow:hidden;background:rgba(4,1,18,.99);border-top:1px solid rgba(212,168,67,.18)">
+  <div style="flex-shrink:0;padding:0 10px 0 12px;font-size:7px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;white-space:nowrap;border-right:1px solid rgba(212,168,67,.15);color:var(--gold)">✦ THE LINKS VIP KTV ✦</div>
   <div style="flex:1;overflow:hidden"><span class="mq-text" id="mqText">✦ Selamat Datang di THE LINKS VIP KTV Batam — Premier Luxury Karaoke Experience ✦ Pilih lagu dari YouTube & klik untuk masuk antrian ✦ Scan QR Code untuk kontrol dari HP ✦ Enjoy your night! ✦</span></div>
 </div>
 
@@ -534,8 +394,7 @@ input[type="text"]:focus{
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <script>
-// ─── CONFIG ──────────────────────────────────────────────────────────────────
-const YT_KEY = "AIzaSyDRqyB5XtgdHTtDVbhuIR5cL6OqDTZlFgE";
+const YT_KEY="AIzaSyDRqyB5XtgdHTtDVbhuIR5cL6OqDTZlFgE";
 
 firebase.initializeApp({
   apiKey:"AIzaSyBEx2cWIr5e1vZamz65kq8cO1JQ0cUAzuQ",
@@ -546,41 +405,20 @@ firebase.initializeApp({
   messagingSenderId:"868744728649",
   appId:"1:868744728649:web:500e5bec0ce4ca70f62f98"
 });
-const db = firebase.database();
-
-// ─── BOKEH ORBS (static, lightweight — no animation, no blur) ──────────────
-(function(){
-  var orbs=[
-    {x:"5%",  y:"75%",s:200,c:"rgba(255,77,166,.12)"},
-    {x:"95%", y:"68%",s:180,c:"rgba(130,25,210,.16)"},
-    {x:"50%", y:"90%",s:160,c:"rgba(0,245,255,.1)"},
-    {x:"25%", y:"50%",s:130,c:"rgba(57,255,20,.09)"}
-  ];
-  var bk=document.getElementById("bk");
-  orbs.forEach(function(o){
-    var d=document.createElement("div");
-    d.className="orb";
-    d.style.cssText="left:"+o.x+";top:"+o.y+";width:"+o.s+"px;height:"+o.s+"px;background:"+o.c;
-    bk.appendChild(d);
-  });
-})();
+const db=firebase.database();
 
 // ─── KEYBOARD ────────────────────────────────────────────────────────────────
 const KEYS="1234567890QWERTYUIOPASDFGHJKLZXCVBNM".split("");
-let isShift=true, searchVal="";
-
+let isShift=true,searchVal="";
 function buildKeyboard(){
-  const g=document.getElementById("kbGrid");
-  g.innerHTML="";
+  const g=document.getElementById("kbGrid");g.innerHTML="";
   KEYS.forEach(k=>{
-    const b=document.createElement("button");
-    b.className="key-btn";
+    const b=document.createElement("button");b.className="key-btn";
     b.textContent=isShift?k:k.toLowerCase();
     b.addEventListener("pointerdown",e=>{e.preventDefault();typeChar(isShift?k:k.toLowerCase())});
     g.appendChild(b);
   });
 }
-
 function typeChar(c){searchVal+=c;updateDisplay()}
 function kbDel(){searchVal=searchVal.slice(0,-1);updateDisplay()}
 function kbSpace(){searchVal+=" ";updateDisplay()}
@@ -591,9 +429,9 @@ function updateDisplay(){
 function toggleShift(){
   isShift=!isShift;
   document.getElementById("capsLabel").textContent=isShift?"CAPS ON":"caps off";
-  document.getElementById("shiftBtn").style.color=isShift?"#FFD740":"rgba(255,200,0,.4)";
-  document.getElementById("shiftBtn").style.borderColor=isShift?"rgba(255,200,0,.7)":"rgba(255,200,0,.25)";
-  document.getElementById("shiftBtn").style.background=isShift?"linear-gradient(135deg,rgba(255,200,0,.28),rgba(180,140,0,.15))":"rgba(255,200,0,.05)";
+  const sb=document.getElementById("shiftBtn");
+  sb.style.color=isShift?"#FFD740":"rgba(255,200,0,.35)";
+  sb.style.borderColor=isShift?"rgba(255,200,0,.65)":"rgba(255,200,0,.2)";
   buildKeyboard();
 }
 document.getElementById("searchInput").addEventListener("input",e=>{searchVal=e.target.value;updateDisplay()});
@@ -602,13 +440,13 @@ buildKeyboard();
 
 // ─── CLOCK ───────────────────────────────────────────────────────────────────
 function updateClock(){document.getElementById("clock").textContent=new Date().toLocaleTimeString("id-ID",{hour12:false})}
-updateClock(); setInterval(updateClock,1000);
+updateClock();setInterval(updateClock,1000);
 
 // ─── NOTIFICATION ────────────────────────────────────────────────────────────
 let notifTimer=null;
 function showNotif(msg){
   const el=document.getElementById("notif");
-  el.textContent=msg; el.classList.add("show");
+  el.textContent=msg;el.classList.add("show");
   if(notifTimer)clearTimeout(notifTimer);
   notifTimer=setTimeout(()=>el.classList.remove("show"),2500);
 }
@@ -623,209 +461,137 @@ function onYouTubeIframeAPIReady(){p=new YT.Player('P',{height:'100%',width:'100
 window.addEventListener('message',function(e){if(!e.data||!e.data.type)return;if(e.data.type==='play'){if(p&&p.loadVideoById)p.loadVideoById(e.data.id);else pv=e.data.id}if(e.data.type==='pause'&&p)p.pauseVideo();if(e.data.type==='resume'&&p)p.playVideo()});
 <\/script></body></html>`;
 
-let playerWin=null, winReady=false, pendVid=null, paused=false;
-
+let playerWin=null,winReady=false,pendVid=null,paused=false;
 function openPlayer(){
   if(!playerWin||playerWin.closed){
     const w=window.open("","KTVPlayer","width=1280,height=720,toolbar=no,menubar=no,status=no");
     if(!w){showNotif("AKTIFKAN POPUP BROWSER!");return}
-    winReady=false; playerWin=w;
-    w.document.open(); w.document.write(PLAYER_HTML); w.document.close();
+    winReady=false;playerWin=w;
+    w.document.open();w.document.write(PLAYER_HTML);w.document.close();
   }
 }
-
 function sendPlay(song){
-  if(winReady&&playerWin&&!playerWin.closed){
-    playerWin.postMessage({type:"play",id:song.id},"*");
-  } else {pendVid=song.id}
+  if(winReady&&playerWin&&!playerWin.closed)playerWin.postMessage({type:"play",id:song.id},"*");
+  else pendVid=song.id;
   updateNowPlaying(song);
   showNotif("▶ "+song.title.substring(0,42));
   document.getElementById("mqText").textContent="▶ MEMUTAR: "+song.title+" • "+song.channel+" • THE LINKS VIP KTV Batam ★ Selamat Bernyanyi!";
 }
-
 window.addEventListener("message",e=>{
   if(!e.data||!e.data.type)return;
-  if(e.data.type==="ready"){
-    winReady=true;
-    if(pendVid&&playerWin&&!playerWin.closed){playerWin.postMessage({type:"play",id:pendVid},"*");pendVid=null}
-  }
+  if(e.data.type==="ready"){winReady=true;if(pendVid&&playerWin&&!playerWin.closed){playerWin.postMessage({type:"play",id:pendVid},"*");pendVid=null}}
   if(e.data.type==="ended")popAndNext(true);
 });
 
-// ─── NOW PLAYING UI ──────────────────────────────────────────────────────────
+// ─── NOW PLAYING ──────────────────────────────────────────────────────────────
 let nowPlaying=null;
 function updateNowPlaying(song){
   nowPlaying=song;
-  const dot=document.getElementById("npDot");
-  const thumb=document.getElementById("npThumb");
-  const title=document.getElementById("npTitle");
-  const chan=document.getElementById("npChan");
-  const status=document.getElementById("npStatus");
-  const eq=document.getElementById("eqBars");
+  const dot=document.getElementById("npDot"),thumb=document.getElementById("npThumb"),
+        title=document.getElementById("npTitle"),chan=document.getElementById("npChan"),
+        status=document.getElementById("npStatus"),eq=document.getElementById("eqBars");
   if(song){
-    dot.style.background="#D4A843";
-    dot.style.boxShadow="0 0 10px #D4A843,0 0 20px rgba(212,168,67,.5)";
-    dot.style.animation="neonPulse 1.2s ease-in-out infinite";
-    thumb.src=song.thumb; thumb.style.display="block";
-    title.textContent=song.title; title.style.color="rgba(240,192,80,.9)"; title.style.fontStyle="normal";
-    chan.textContent=song.channel; chan.style.display="block";
-    status.textContent="NOW PLAYING";
-    eq.classList.remove("eq-off");
+    dot.style.background="#D4A843";dot.style.animation="blink 1.2s ease-in-out infinite";
+    thumb.src=song.thumb;thumb.style.display="block";
+    title.textContent=song.title;title.style.color="rgba(240,192,80,.88)";title.style.fontStyle="normal";
+    chan.textContent=song.channel;chan.style.display="block";
+    status.textContent="NOW PLAYING";eq.classList.remove("eq-off");
   } else {
-    dot.style.background="#333"; dot.style.boxShadow="none"; dot.style.animation="none";
+    dot.style.background="#333";dot.style.animation="none";
     thumb.style.display="none";
-    title.textContent="Tidak ada lagu diputar"; title.style.color="rgba(240,192,80,.4)"; title.style.fontStyle="italic";
-    chan.style.display="none"; status.textContent="STANDBY";
-    eq.classList.add("eq-off");
+    title.textContent="Tidak ada lagu diputar";title.style.color="rgba(240,192,80,.35)";title.style.fontStyle="italic";
+    chan.style.display="none";status.textContent="STANDBY";eq.classList.add("eq-off");
   }
 }
 updateNowPlaying(null);
 
 // ─── PLAYLIST ────────────────────────────────────────────────────────────────
 let playlist=[];
-
 function renderPlaylist(){
   const el=document.getElementById("plList");
   document.getElementById("plCount").textContent=playlist.length+" lagu";
   document.getElementById("plTotal").textContent=playlist.length;
   if(!playlist.length){
-    el.innerHTML=`<div style="text-align:center;margin:auto;display:flex;flex-direction:column;align-items:center;gap:7px;padding:20px 0">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(57,255,20,.15)" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-      <p style="font-size:9px;color:rgba(255,255,255,.2);font-style:italic;text-align:center">Antrian kosong.</p></div>`;
+    el.innerHTML='<div style="text-align:center;margin:auto;padding:20px 0;color:rgba(255,255,255,.18);font-size:8.5px;font-style:italic">Antrian kosong.</div>';
     return;
   }
   el.innerHTML="";
   playlist.forEach((s,i)=>{
-    const isNow=i===0;
-    const div=document.createElement("div");
+    const isNow=i===0,div=document.createElement("div");
     div.className="song-item"+(isNow?" now-playing":"");
-    if(isNow){div.style.borderBottom="1px solid rgba(212,168,67,.18)";div.style.marginBottom="4px";div.style.paddingBottom="7px"}
     if(isNow){
       div.innerHTML=`
-        <div style="flex-shrink:0;width:42px;display:flex;flex-direction:column;align-items:center;gap:3px">
-          <img src="${escHtml(s.thumb)}" style="width:42px;height:28px;object-fit:cover;border-radius:4px;border:1px solid rgba(212,168,67,.45)"/>
-        </div>
+        <img src="${escHtml(s.thumb)}" style="width:40px;height:26px;object-fit:cover;border-radius:4px;flex-shrink:0;border:1px solid rgba(212,168,67,.4)"/>
         <div style="flex:1;min-width:0">
-          <div style="font-size:9.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(240,192,80,.95)">${escHtml(s.title)}</div>
-          <div style="font-size:7.5px;color:rgba(57,255,20,.45);text-transform:uppercase;letter-spacing:.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px">${escHtml(s.channel)}</div>
+          <div style="font-size:9px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(240,192,80,.92)">${escHtml(s.title)}</div>
+          <div style="font-size:7px;color:rgba(57,255,20,.4);text-transform:uppercase;letter-spacing:.05em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px">${escHtml(s.channel)}</div>
         </div>
-        <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px">
-          <div style="font-size:7px;font-weight:900;color:#D4A843;letter-spacing:.1em">🔊 NOW</div>
-        </div>`;
+        <div style="font-size:7px;font-weight:700;color:#D4A843;flex-shrink:0">🔊</div>`;
     } else {
       div.innerHTML=`
         <div class="queue-num">${i}</div>
-        <img src="${escHtml(s.thumb)}" style="width:38px;height:25px;object-fit:cover;border-radius:3px;flex-shrink:0;border:1px solid rgba(255,255,255,.07)"/>
+        <img src="${escHtml(s.thumb)}" style="width:36px;height:24px;object-fit:cover;border-radius:3px;flex-shrink:0"/>
         <div style="flex:1;min-width:0">
-          <div style="font-size:9px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.82)">${escHtml(s.title)}</div>
-          <div style="font-size:7.5px;color:rgba(57,255,20,.38);text-transform:uppercase;letter-spacing:.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px">${escHtml(s.channel)}</div>
+          <div style="font-size:8.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.8)">${escHtml(s.title)}</div>
+          <div style="font-size:7px;color:rgba(57,255,20,.35);text-transform:uppercase;letter-spacing:.05em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px">${escHtml(s.channel)}</div>
         </div>
-        <button onclick="removeSong(${i})" style="flex-shrink:0;width:20px;height:20px;border-radius:4px;background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.25);color:rgba(255,100,100,.55);font-size:9px;cursor:pointer;transition:all .1s;font-family:inherit">✕</button>`;
+        <button onclick="removeSong(${i})" style="flex-shrink:0;width:18px;height:18px;border-radius:4px;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.22);color:rgba(255,100,100,.5);font-size:8px;cursor:pointer;font-family:inherit">✕</button>`;
       div.addEventListener("click",e=>{if(e.target.tagName==="BUTTON")return;bumpToNext(i)});
     }
     el.appendChild(div);
   });
 }
-
 function addSong(s,fromAuto=false){
   if(playlist.some(p=>p.id===s.id)){if(!fromAuto)showNotif("⚠ SUDAH ADA DI ANTRIAN");return}
   playlist.push(s);
   if(!fromAuto)showNotif("+ ANTRIAN: "+s.title.substring(0,36));
-  if(playlist.length===1)setTimeout(()=>{playTop()},0);
+  if(playlist.length===1)setTimeout(()=>playTop(),0);
   renderPlaylist();
 }
-
-function removeSong(idx){
-  if(idx<=0||idx>=playlist.length)return;
-  playlist.splice(idx,1);
-  showNotif("✕ DIHAPUS DARI ANTRIAN");
-  renderPlaylist();
-}
-
-function bumpToNext(idx){
-  if(idx<=1||idx>=playlist.length)return;
-  const [s]=playlist.splice(idx,1);
-  playlist.splice(1,0,s);
-  showNotif("▲ LAGU DIMAJUKAN");
-  renderPlaylist();
-}
-
-function playTop(){
-  if(!playlist.length)return;
-  paused=false; sendPlay(playlist[0]);
-}
-
+function removeSong(idx){if(idx<=0||idx>=playlist.length)return;playlist.splice(idx,1);showNotif("✕ DIHAPUS");renderPlaylist()}
+function bumpToNext(idx){if(idx<=1||idx>=playlist.length)return;const[s]=playlist.splice(idx,1);playlist.splice(1,0,s);showNotif("▲ LAGU DIMAJUKAN");renderPlaylist()}
+function playTop(){if(!playlist.length)return;paused=false;sendPlay(playlist[0])}
 function popAndNext(notify=false){
   playlist.shift();
-  if(playlist.length>0){
-    paused=false; openPlayer(); sendPlay(playlist[0]);
-  } else {
-    updateNowPlaying(null);
-    if(notify)showNotif("★ PLAYLIST SELESAI ★");
-  }
+  if(playlist.length>0){paused=false;openPlayer();sendPlay(playlist[0])}
+  else{updateNowPlaying(null);if(notify)showNotif("★ PLAYLIST SELESAI ★")}
   renderPlaylist();
 }
-
 renderPlaylist();
 
 // ─── CONTROLS ────────────────────────────────────────────────────────────────
-function onPlay(){
-  if(!playlist.length)return;
-  openPlayer(); playTop();
-}
+function onPlay(){if(!playlist.length)return;openPlayer();playTop()}
 function onPause(){
   if(!playerWin||playerWin.closed)return;
   if(!paused){playerWin.postMessage({type:"pause"},"*");paused=true;showNotif("⏸ PAUSED")}
   else{playerWin.postMessage({type:"resume"},"*");paused=false;showNotif("▶ RESUMED")}
 }
 function onNext(){popAndNext(true)}
-function onClear(){
-  playlist=[];paused=false;pendVid=null;
-  updateNowPlaying(null);
-  showNotif("PLAYLIST DIKOSONGKAN");
-  renderPlaylist();
-}
-function moveUp(){
-  if(playlist.length<3)return;
-  [playlist[1],playlist[2]]=[playlist[2],playlist[1]];
-  showNotif("▲ ANTRIAN DIMAJUKAN"); renderPlaylist();
-}
-function moveDown(){
-  if(playlist.length<3)return;
-  [playlist[1],playlist[2]]=[playlist[2],playlist[1]];
-  showNotif("▼ ANTRIAN DIMUNDURKAN"); renderPlaylist();
-}
+function onClear(){playlist=[];paused=false;pendVid=null;updateNowPlaying(null);showNotif("PLAYLIST DIKOSONGKAN");renderPlaylist()}
+function moveUp(){if(playlist.length<3)return;[playlist[1],playlist[2]]=[playlist[2],playlist[1]];showNotif("▲ DIMAJUKAN");renderPlaylist()}
+function moveDown(){if(playlist.length<3)return;[playlist[1],playlist[2]]=[playlist[2],playlist[1]];showNotif("▼ DIMUNDURKAN");renderPlaylist()}
 
 // ─── SEARCH ──────────────────────────────────────────────────────────────────
-let srItems=[], selIdx=-1;
-
+let srItems=[],selIdx=-1;
 async function doSearch(){
-  const q=searchVal.trim();
-  if(!q)return;
-  searchVal=""; updateDisplay();
-  setSearching(true);
-  srItems=[]; selIdx=-1;
+  const q=searchVal.trim();if(!q)return;
+  searchVal="";updateDisplay();setSearching(true);srItems=[];selIdx=-1;
   try{
     const r=await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&q=${encodeURIComponent(q)}&key=${YT_KEY}`);
     const d=await r.json();
     if(!d.items||!d.items.length){setSearching(false);return}
     srItems=d.items.filter(i=>i.id&&i.id.videoId).map(i=>({
-      id:i.id.videoId, title:i.snippet.title,
-      channel:i.snippet.channelTitle, thumb:i.snippet.thumbnails.default.url
+      id:i.id.videoId,title:i.snippet.title,
+      channel:i.snippet.channelTitle,thumb:i.snippet.thumbnails.default.url
     }));
-    renderSR();
-    setSearching(false);
+    renderSR();setSearching(false);
   }catch{setSearching(false)}
 }
-
 function setSearching(v){
   const el=document.getElementById("srList");
   document.getElementById("srCount").textContent=v?"...":"0";
-  if(v){el.innerHTML=`<div style="text-align:center;margin:auto;display:flex;flex-direction:column;align-items:center;gap:7px;padding:20px 0">
-    <div style="width:20px;height:20px;border:2px solid rgba(0,245,255,.4);border-top-color:#00F5FF;border-radius:50%;animation:spin .8s linear infinite"></div>
-    <p style="font-size:8.5px;color:rgba(0,245,255,.45);letter-spacing:.12em;text-transform:uppercase">Mencari di YouTube...</p></div>`}
+  if(v)el.innerHTML='<div style="text-align:center;margin:auto;padding:20px 0;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:18px;height:18px;border:2px solid rgba(0,245,255,.3);border-top-color:#00F5FF;border-radius:50%;animation:spin .8s linear infinite"></div><p style="font-size:8px;color:rgba(0,245,255,.4);letter-spacing:.1em;text-transform:uppercase">Mencari...</p></div>';
 }
-
 function renderSR(){
   const el=document.getElementById("srList");
   document.getElementById("srCount").textContent=srItems.length+" hasil";
@@ -837,7 +603,7 @@ function renderSR(){
       <img src="${escHtml(s.thumb)}" alt=""/>
       <div style="flex:1;min-width:0">
         <div class="song-title" style="${i===0?"color:#FFD740":""}">
-          ${i===0?'<span style="font-size:7px;font-weight:900;color:#39FF14;letter-spacing:.1em;margin-right:4px">▶TOP</span>':""} ${escHtml(s.title)}
+          ${i===0?'<span style="font-size:7px;font-weight:900;color:#39FF14;margin-right:3px">▶TOP</span>':""} ${escHtml(s.title)}
         </div>
         <div class="song-channel">${escHtml(s.channel)}</div>
       </div>`;
@@ -845,163 +611,83 @@ function renderSR(){
     el.appendChild(div);
   });
 }
+function navigateSR(dir){if(!srItems.length)return;selIdx=(selIdx+dir+srItems.length)%srItems.length;renderSR()}
 
-function navigateSR(dir){
-  if(!srItems.length)return;
-  selIdx=(selIdx+dir+srItems.length)%srItems.length;
-  renderSR();
-}
-
-// ─── QR CODE ─────────────────────────────────────────────────────────────────
+// ─── QR ──────────────────────────────────────────────────────────────────────
 const remoteUrl=window.location.href.replace(/[?#].*$/,"").replace(/\/?$/,"")+"/remote.html";
 document.getElementById("qrImg").src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&margin=4&data="+encodeURIComponent(remoteUrl);
 
-// ─── FIREBASE LISTENER ───────────────────────────────────────────────────────
+// ─── FIREBASE ────────────────────────────────────────────────────────────────
 db.ref("commands").on("child_added",snap=>{
-  const c=snap.val();
-  if(!c)return;
+  const c=snap.val();if(!c)return;
   switch(c.action){
-    case"play":    openPlayer(); onPlay(); break;
-    case"togglePause": onPause(); break;
-    case"next":    onNext(); break;
-    case"up":      moveUp(); break;
-    case"down":    moveDown(); break;
-    case"clear":   onClear(); break;
-    case"add":     if(c.payload){openPlayer();addSong(c.payload)} break;
+    case"play":openPlayer();onPlay();break;
+    case"togglePause":onPause();break;
+    case"next":onNext();break;
+    case"up":moveUp();break;
+    case"down":moveDown();break;
+    case"clear":onClear();break;
+    case"add":if(c.payload){openPlayer();addSong(c.payload)}break;
   }
   snap.ref.remove();
 });
 
 // ─── FULLSCREEN ───────────────────────────────────────────────────────────────
 function toggleFullscreen(){
-  if(!document.fullscreenElement){
-    document.documentElement.requestFullscreen().catch(()=>{});
-  } else {
-    document.exitFullscreen().catch(()=>{});
-  }
+  if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen().catch(()=>{});
 }
 document.addEventListener("fullscreenchange",function(){
-  const fs=!!document.fullscreenElement;
-  const btn=document.getElementById("fsBtn");
-  const lbl=document.getElementById("fsLabel");
-  const icon=document.getElementById("fsIcon");
-  if(fs){
-    btn.style.background="rgba(57,255,20,.15)";
-    btn.style.borderColor="rgba(57,255,20,.6)";
-    btn.style.color="#39FF14";
-    lbl.textContent="KELUAR FS";
-    icon.innerHTML='<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>';
-  } else {
-    btn.style.background="rgba(212,168,67,.1)";
-    btn.style.borderColor="rgba(212,168,67,.4)";
-    btn.style.color="#D4A843";
-    lbl.textContent="FULLSCREEN";
-    icon.innerHTML='<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>';
-  }
+  const fs=!!document.fullscreenElement,btn=document.getElementById("fsBtn"),lbl=document.getElementById("fsLabel"),icon=document.getElementById("fsIcon");
+  if(fs){btn.style.background="rgba(57,255,20,.12)";btn.style.borderColor="rgba(57,255,20,.55)";btn.style.color="#39FF14";lbl.textContent="KELUAR FS";icon.innerHTML='<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>';}
+  else{btn.style.background="rgba(212,168,67,.08)";btn.style.borderColor="rgba(212,168,67,.4)";btn.style.color="#D4A843";lbl.textContent="FULLSCREEN";icon.innerHTML='<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>';}
 });
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
-function escHtml(str){
-  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
+function escHtml(str){return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
 
 // ─── AD SLIDESHOW ─────────────────────────────────────────────────────────────
-const AD_INTERVALS = [4500, 5000];
-const adTimers = [null, null];
-
-function loadAdImages(slot){
-  try{ return JSON.parse(localStorage.getItem('ktv_ad'+slot)||'[]'); }catch(e){return [];}
-}
-function saveAdImages(slot, arr){
-  localStorage.setItem('ktv_ad'+slot, JSON.stringify(arr));
-}
-
+const AD_INTERVALS=[4500,5000];const adTimers=[null,null];
+function loadAdImages(slot){try{return JSON.parse(localStorage.getItem('ktv_ad'+slot)||'[]')}catch(e){return[]}}
+function saveAdImages(slot,arr){localStorage.setItem('ktv_ad'+slot,JSON.stringify(arr))}
 function buildSlideshow(slot){
-  const idx = slot-1;
-  if(adTimers[idx]) clearInterval(adTimers[idx]);
-  const wrap = document.getElementById('adWrap'+slot);
-  const dotsEl = document.getElementById('adDots'+slot);
-  const placeholder = document.getElementById('adPlaceholder'+slot);
-  Array.from(wrap.querySelectorAll('img')).forEach(el=>el.remove());
-  dotsEl.innerHTML='';
-  const images = loadAdImages(slot).filter(s=>s.trim());
-  if(!images.length){ placeholder.style.display='flex'; return; }
-  placeholder.style.display='none';
-  let cur=0;
-  const imgs=[];
+  const idx=slot-1;if(adTimers[idx])clearInterval(adTimers[idx]);
+  const wrap=document.getElementById('adWrap'+slot),dotsEl=document.getElementById('adDots'+slot),placeholder=document.getElementById('adPlaceholder'+slot);
+  Array.from(wrap.querySelectorAll('img')).forEach(el=>el.remove());dotsEl.innerHTML='';
+  const images=loadAdImages(slot).filter(s=>s.trim());
+  if(!images.length){placeholder.style.display='flex';return}
+  placeholder.style.display='none';let cur=0;const imgs=[];
   images.forEach((src,i)=>{
-    const img=document.createElement('img');
-    img.src=src;
-    if(i===0) img.className='active';
-    wrap.appendChild(img);
-    imgs.push(img);
-    const dot=document.createElement('div');
-    dot.className='ad-dot'+(i===0?' active':'');
-    dot.addEventListener('click',()=>goTo(i));
-    dotsEl.appendChild(dot);
+    const img=document.createElement('img');img.src=src;if(i===0)img.className='active';wrap.appendChild(img);imgs.push(img);
+    const dot=document.createElement('div');dot.className='ad-dot'+(i===0?' active':'');dot.style.cssText='width:5px;height:5px;border-radius:50%;background:rgba(212,168,67,.2);cursor:pointer;transition:background .2s;display:inline-block';
+    if(i===0){dot.style.background='#D4A843';dot.style.width='12px';dot.style.borderRadius='2px'}
+    dot.addEventListener('click',()=>goTo(i));dotsEl.appendChild(dot);
   });
-  function goTo(i){
-    imgs[cur].className='';
-    dotsEl.children[cur].className='ad-dot';
-    cur=i;
-    imgs[cur].className='active';
-    dotsEl.children[cur].className='ad-dot active';
-  }
-  if(images.length>1){
-    adTimers[idx]=setInterval(()=>goTo((cur+1)%images.length), AD_INTERVALS[idx]);
-  }
+  function goTo(i){imgs[cur].className='';Array.from(dotsEl.children).forEach((d,j)=>{d.style.background=j===i?'#D4A843':'rgba(212,168,67,.2)';d.style.width=j===i?'12px':'5px';d.style.borderRadius=j===i?'2px':'50%'});cur=i;imgs[cur].className='active'}
+  if(images.length>1)adTimers[idx]=setInterval(()=>goTo((cur+1)%images.length),AD_INTERVALS[idx]);
 }
-
-buildSlideshow(1);
-buildSlideshow(2);
+buildSlideshow(1);buildSlideshow(2);
 
 // ─── AD MODAL ────────────────────────────────────────────────────────────────
-let _adModalSlot = 1;
-
+let _adModalSlot=1;
 function openAdModal(slot){
-  _adModalSlot = slot;
-  const imgs = loadAdImages(slot);
-  const body = document.getElementById('adModalBody');
-  const title = document.getElementById('adModalTitle');
-  title.textContent = '✎ UBAH GAMBAR IKLAN ' + slot;
-  body.innerHTML = '';
-  if(imgs.length===0) addAdRow('');
-  else imgs.forEach(src=>addAdRow(src));
+  _adModalSlot=slot;
+  const imgs=loadAdImages(slot),body=document.getElementById('adModalBody'),title=document.getElementById('adModalTitle');
+  title.textContent='✎ UBAH GAMBAR IKLAN '+slot;body.innerHTML='';
+  if(imgs.length===0)addAdRow('');else imgs.forEach(src=>addAdRow(src));
   document.getElementById('adModal').classList.add('open');
 }
-
 function addAdRow(val){
-  const body = document.getElementById('adModalBody');
-  const row = document.createElement('div');
-  row.className='ad-url-row';
-  const num = body.children.length+1;
-  row.innerHTML=`
-    <input type="text" placeholder="URL gambar ke-${num} (https://...)" value="${escHtml(val||'')}"/>
-    <button class="ad-url-del" onclick="this.closest('.ad-url-row').remove();reindexAdRows()">✕</button>`;
+  const body=document.getElementById('adModalBody'),row=document.createElement('div');
+  row.className='ad-url-row';const num=body.children.length+1;
+  row.innerHTML=`<input type="text" placeholder="URL gambar ke-${num} (https://...)" value="${escHtml(val||'')}"/><button class="ad-url-del" onclick="this.closest('.ad-url-row').remove();reindexAdRows()">✕</button>`;
   body.appendChild(row);
 }
-
-function reindexAdRows(){
-  document.querySelectorAll('#adModalBody .ad-url-row input').forEach((inp,i)=>{
-    inp.placeholder='URL gambar ke-'+(i+1)+' (https://...)';
-  });
-}
-
-function saveAdModal(){
-  const rows = document.querySelectorAll('#adModalBody .ad-url-row input');
-  const urls = Array.from(rows).map(r=>r.value.trim()).filter(Boolean);
-  saveAdImages(_adModalSlot, urls);
-  buildSlideshow(_adModalSlot);
-  closeAdModal();
-}
-
-function closeAdModal(){
-  document.getElementById('adModal').classList.remove('open');
-}
-
-document.getElementById('adModalBg').addEventListener('click', closeAdModal);
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAdModal(); });
-
+function reindexAdRows(){document.querySelectorAll('#adModalBody .ad-url-row input').forEach((inp,i)=>{inp.placeholder='URL gambar ke-'+(i+1)+' (https://...)'})}
+function saveAdModal(){const rows=document.querySelectorAll('#adModalBody .ad-url-row input');saveAdImages(_adModalSlot,Array.from(rows).map(r=>r.value.trim()).filter(Boolean));buildSlideshow(_adModalSlot);closeAdModal()}
+function closeAdModal(){document.getElementById('adModal').classList.remove('open')}
+document.getElementById('adModalBg').addEventListener('click',closeAdModal);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAdModal()});
 </script>
 </body>
 </html>
